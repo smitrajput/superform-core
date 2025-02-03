@@ -1,0 +1,634 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ISuperRegistry</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../favicon.png">
+        <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../../highlight.css">
+        <link rel="stylesheet" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../../book.css">
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/smitrajput/superform-core" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="isuperregistry"><a class="header" href="#isuperregistry">ISuperRegistry</a></h1>
+<p><a href="https://github.com/smitrajput/superform-core/blob/2b1abb2f4e63862837f97d3914b36257db87d926/src/interfaces/ISuperRegistry.sol">Git Source</a></p>
+<p><strong>Author:</strong>
+Zeropoint Labs.</p>
+<p><em>interface for Super Registry</em></p>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<h3 id="setdelay"><a class="header" href="#setdelay">setDelay</a></h3>
+<p><em>sets the deposit rescue delay</em></p>
+<pre><code class="language-solidity">function setDelay(uint256 delay_) external;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>delay_</code></td><td><code>uint256</code></td><td>the delay in seconds before the deposit rescue can be finalized</td></tr>
+</tbody></table>
+</div>
+<h3 id="setpermit2"><a class="header" href="#setpermit2">setPermit2</a></h3>
+<p><em>sets the permit2 address</em></p>
+<pre><code class="language-solidity">function setPermit2(address permit2_) external;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>permit2_</code></td><td><code>address</code></td><td>the address of the permit2 contract</td></tr>
+</tbody></table>
+</div>
+<h3 id="setaddress"><a class="header" href="#setaddress">setAddress</a></h3>
+<p><em>sets a new address on a specific chain.</em></p>
+<pre><code class="language-solidity">function setAddress(bytes32 id_, address newAddress_, uint64 chainId_) external;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>id_</code></td><td><code>bytes32</code></td><td>the identifier of the address on that chain</td></tr>
+<tr><td><code>newAddress_</code></td><td><code>address</code></td><td>the new address on that chain</td></tr>
+<tr><td><code>chainId_</code></td><td><code>uint64</code></td><td>the chain id of that chain</td></tr>
+</tbody></table>
+</div>
+<h3 id="setbridgeaddresses"><a class="header" href="#setbridgeaddresses">setBridgeAddresses</a></h3>
+<p>this function operates in an APPEND-ONLY fashion.</p>
+<p><em>allows admin to set the bridge address for an bridge id.</em></p>
+<pre><code class="language-solidity">function setBridgeAddresses(
+    uint8[] memory bridgeId_,
+    address[] memory bridgeAddress_,
+    address[] memory bridgeValidator_
+)
+    external;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>bridgeId_</code></td><td><code>uint8[]</code></td><td>represents the bridge unqiue identifier.</td></tr>
+<tr><td><code>bridgeAddress_</code></td><td><code>address[]</code></td><td>represents the bridge address.</td></tr>
+<tr><td><code>bridgeValidator_</code></td><td><code>address[]</code></td><td>represents the bridge validator address.</td></tr>
+</tbody></table>
+</div>
+<h3 id="setambaddress"><a class="header" href="#setambaddress">setAmbAddress</a></h3>
+<p>this function operates in an APPEND-ONLY fashion.</p>
+<p><em>allows admin to set the amb address for an amb id.</em></p>
+<pre><code class="language-solidity">function setAmbAddress(uint8[] memory ambId_, address[] memory ambAddress_, bool[] memory isBroadcastAMB_) external;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>ambId_</code></td><td><code>uint8[]</code></td><td>represents the bridge unqiue identifier.</td></tr>
+<tr><td><code>ambAddress_</code></td><td><code>address[]</code></td><td>represents the bridge address.</td></tr>
+<tr><td><code>isBroadcastAMB_</code></td><td><code>bool[]</code></td><td>represents whether the amb implementation supports broadcasting</td></tr>
+</tbody></table>
+</div>
+<h3 id="setstateregistryaddress"><a class="header" href="#setstateregistryaddress">setStateRegistryAddress</a></h3>
+<p>this function operates in an APPEND-ONLY fashion.</p>
+<p><em>allows admin to set the state registry address for an state registry id.</em></p>
+<pre><code class="language-solidity">function setStateRegistryAddress(uint8[] memory registryId_, address[] memory registryAddress_) external;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>registryId_</code></td><td><code>uint8[]</code></td><td>represents the state registry's unqiue identifier.</td></tr>
+<tr><td><code>registryAddress_</code></td><td><code>address[]</code></td><td>represents the state registry's address.</td></tr>
+</tbody></table>
+</div>
+<h3 id="setrouterinfo"><a class="header" href="#setrouterinfo">setRouterInfo</a></h3>
+<p>this function operates in an APPEND-ONLY fashion.</p>
+<p><em>allows admin to set the superform routers info</em></p>
+<pre><code class="language-solidity">function setRouterInfo(
+    uint8[] memory superformRouterIds_,
+    address[] memory stateSyncers_,
+    address[] memory routers_
+)
+    external;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>superformRouterIds_</code></td><td><code>uint8[]</code></td><td>represents the superform router's unqiue identifier.</td></tr>
+<tr><td><code>stateSyncers_</code></td><td><code>address[]</code></td><td>represents the state syncer's address.</td></tr>
+<tr><td><code>routers_</code></td><td><code>address[]</code></td><td>represents the router's address.</td></tr>
+</tbody></table>
+</div>
+<h3 id="delay"><a class="header" href="#delay">delay</a></h3>
+<p><em>gets the deposit rescue delay</em></p>
+<pre><code class="language-solidity">function delay() external view returns (uint256);
+</code></pre>
+<h3 id="permit2"><a class="header" href="#permit2">PERMIT2</a></h3>
+<p><em>returns the permit2 address</em></p>
+<pre><code class="language-solidity">function PERMIT2() external view returns (address);
+</code></pre>
+<h3 id="superform_router"><a class="header" href="#superform_router">SUPERFORM_ROUTER</a></h3>
+<p><em>returns the id of the super router module</em></p>
+<pre><code class="language-solidity">function SUPERFORM_ROUTER() external view returns (bytes32);
+</code></pre>
+<h3 id="superform_factory"><a class="header" href="#superform_factory">SUPERFORM_FACTORY</a></h3>
+<p><em>returns the id of the superform factory module</em></p>
+<pre><code class="language-solidity">function SUPERFORM_FACTORY() external view returns (bytes32);
+</code></pre>
+<h3 id="super_transmuter"><a class="header" href="#super_transmuter">SUPER_TRANSMUTER</a></h3>
+<p><em>returns the id of the superform transmuter</em></p>
+<pre><code class="language-solidity">function SUPER_TRANSMUTER() external view returns (bytes32);
+</code></pre>
+<h3 id="paymaster"><a class="header" href="#paymaster">PAYMASTER</a></h3>
+<p><em>returns the id of the superform paymaster contract</em></p>
+<pre><code class="language-solidity">function PAYMASTER() external view returns (bytes32);
+</code></pre>
+<h3 id="payment_helper"><a class="header" href="#payment_helper">PAYMENT_HELPER</a></h3>
+<p><em>returns the id of the superform payload helper contract</em></p>
+<pre><code class="language-solidity">function PAYMENT_HELPER() external view returns (bytes32);
+</code></pre>
+<h3 id="core_state_registry"><a class="header" href="#core_state_registry">CORE_STATE_REGISTRY</a></h3>
+<p><em>returns the id of the core state registry module</em></p>
+<pre><code class="language-solidity">function CORE_STATE_REGISTRY() external view returns (bytes32);
+</code></pre>
+<h3 id="timelock_state_registry"><a class="header" href="#timelock_state_registry">TIMELOCK_STATE_REGISTRY</a></h3>
+<p><em>returns the id of the two steps form state registry module</em></p>
+<pre><code class="language-solidity">function TIMELOCK_STATE_REGISTRY() external view returns (bytes32);
+</code></pre>
+<h3 id="broadcast_registry"><a class="header" href="#broadcast_registry">BROADCAST_REGISTRY</a></h3>
+<p><em>returns the id of the broadcast state registry module</em></p>
+<pre><code class="language-solidity">function BROADCAST_REGISTRY() external view returns (bytes32);
+</code></pre>
+<h3 id="super_positions"><a class="header" href="#super_positions">SUPER_POSITIONS</a></h3>
+<p><em>returns the id of the super positions module</em></p>
+<pre><code class="language-solidity">function SUPER_POSITIONS() external view returns (bytes32);
+</code></pre>
+<h3 id="super_rbac"><a class="header" href="#super_rbac">SUPER_RBAC</a></h3>
+<p><em>returns the id of the super rbac module</em></p>
+<pre><code class="language-solidity">function SUPER_RBAC() external view returns (bytes32);
+</code></pre>
+<h3 id="payload_helper"><a class="header" href="#payload_helper">PAYLOAD_HELPER</a></h3>
+<p><em>returns the id of the payload helper module</em></p>
+<pre><code class="language-solidity">function PAYLOAD_HELPER() external view returns (bytes32);
+</code></pre>
+<h3 id="dst_swapper"><a class="header" href="#dst_swapper">DST_SWAPPER</a></h3>
+<p><em>returns the id of the dst swapper keeper</em></p>
+<pre><code class="language-solidity">function DST_SWAPPER() external view returns (bytes32);
+</code></pre>
+<h3 id="emergency_queue"><a class="header" href="#emergency_queue">EMERGENCY_QUEUE</a></h3>
+<p><em>returns the id of the emergency queue</em></p>
+<pre><code class="language-solidity">function EMERGENCY_QUEUE() external view returns (bytes32);
+</code></pre>
+<h3 id="payment_admin"><a class="header" href="#payment_admin">PAYMENT_ADMIN</a></h3>
+<p><em>returns the id of the payment admin keeper</em></p>
+<pre><code class="language-solidity">function PAYMENT_ADMIN() external view returns (bytes32);
+</code></pre>
+<h3 id="core_registry_processor"><a class="header" href="#core_registry_processor">CORE_REGISTRY_PROCESSOR</a></h3>
+<p><em>returns the id of the core state registry processor keeper</em></p>
+<pre><code class="language-solidity">function CORE_REGISTRY_PROCESSOR() external view returns (bytes32);
+</code></pre>
+<h3 id="broadcast_registry_processor"><a class="header" href="#broadcast_registry_processor">BROADCAST_REGISTRY_PROCESSOR</a></h3>
+<p><em>returns the id of the broadcast registry processor keeper</em></p>
+<pre><code class="language-solidity">function BROADCAST_REGISTRY_PROCESSOR() external view returns (bytes32);
+</code></pre>
+<h3 id="timelock_registry_processor"><a class="header" href="#timelock_registry_processor">TIMELOCK_REGISTRY_PROCESSOR</a></h3>
+<p><em>returns the id of the two steps form state registry processor keeper</em></p>
+<pre><code class="language-solidity">function TIMELOCK_REGISTRY_PROCESSOR() external view returns (bytes32);
+</code></pre>
+<h3 id="core_registry_updater"><a class="header" href="#core_registry_updater">CORE_REGISTRY_UPDATER</a></h3>
+<p><em>returns the id of the core state registry updater keeper</em></p>
+<pre><code class="language-solidity">function CORE_REGISTRY_UPDATER() external view returns (bytes32);
+</code></pre>
+<h3 id="core_registry_rescuer"><a class="header" href="#core_registry_rescuer">CORE_REGISTRY_RESCUER</a></h3>
+<p><em>returns the id of the core state registry updater keeper</em></p>
+<pre><code class="language-solidity">function CORE_REGISTRY_RESCUER() external view returns (bytes32);
+</code></pre>
+<h3 id="core_registry_disputer"><a class="header" href="#core_registry_disputer">CORE_REGISTRY_DISPUTER</a></h3>
+<p><em>returns the id of the core state registry updater keeper</em></p>
+<pre><code class="language-solidity">function CORE_REGISTRY_DISPUTER() external view returns (bytes32);
+</code></pre>
+<h3 id="dst_swapper_processor"><a class="header" href="#dst_swapper_processor">DST_SWAPPER_PROCESSOR</a></h3>
+<p><em>returns the id of the core state registry updater keeper</em></p>
+<pre><code class="language-solidity">function DST_SWAPPER_PROCESSOR() external view returns (bytes32);
+</code></pre>
+<h3 id="getaddress"><a class="header" href="#getaddress">getAddress</a></h3>
+<p><em>gets the address of a contract on current chain</em></p>
+<pre><code class="language-solidity">function getAddress(bytes32 id_) external view returns (address);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>id_</code></td><td><code>bytes32</code></td><td>is the id of the contract</td></tr>
+</tbody></table>
+</div>
+<h3 id="getaddressbychainid"><a class="header" href="#getaddressbychainid">getAddressByChainId</a></h3>
+<p><em>gets the address of a contract on a target chain</em></p>
+<pre><code class="language-solidity">function getAddressByChainId(bytes32 id_, uint64 chainId_) external view returns (address);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>id_</code></td><td><code>bytes32</code></td><td>is the id of the contract</td></tr>
+<tr><td><code>chainId_</code></td><td><code>uint64</code></td><td>is the chain id of that chain</td></tr>
+</tbody></table>
+</div>
+<h3 id="getbridgeaddress"><a class="header" href="#getbridgeaddress">getBridgeAddress</a></h3>
+<p><em>gets the address of a bridge</em></p>
+<pre><code class="language-solidity">function getBridgeAddress(uint8 bridgeId_) external view returns (address bridgeAddress_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>bridgeId_</code></td><td><code>uint8</code></td><td>is the id of a bridge</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>bridgeAddress_</code></td><td><code>address</code></td><td>is the address of the form</td></tr>
+</tbody></table>
+</div>
+<h3 id="getstateregistry"><a class="header" href="#getstateregistry">getStateRegistry</a></h3>
+<p><em>gets the address of the registry</em></p>
+<pre><code class="language-solidity">function getStateRegistry(uint8 registryId_) external view returns (address registryAddress_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>registryId_</code></td><td><code>uint8</code></td><td>is the id of the state registry</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>registryAddress_</code></td><td><code>address</code></td><td>is the address of the state registry</td></tr>
+</tbody></table>
+</div>
+<h3 id="getambid"><a class="header" href="#getambid">getAmbId</a></h3>
+<p><em>gets the id of the amb</em></p>
+<pre><code class="language-solidity">function getAmbId(address ambAddress_) external view returns (uint8 ambId_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>ambAddress_</code></td><td><code>address</code></td><td>is the address of an amb</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>ambId_</code></td><td><code>uint8</code></td><td>is the identifier of an amb</td></tr>
+</tbody></table>
+</div>
+<h3 id="getstateregistryid"><a class="header" href="#getstateregistryid">getStateRegistryId</a></h3>
+<p>reverts if the id is not found</p>
+<p><em>gets the id of the registry</em></p>
+<pre><code class="language-solidity">function getStateRegistryId(address registryAddress_) external view returns (uint8 registryId_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>registryAddress_</code></td><td><code>address</code></td><td>is the address of the state registry</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>registryId_</code></td><td><code>uint8</code></td><td>is the id of the state registry</td></tr>
+</tbody></table>
+</div>
+<h3 id="getstatesyncer"><a class="header" href="#getstatesyncer">getStateSyncer</a></h3>
+<p><em>gets the address of a state syncer</em></p>
+<pre><code class="language-solidity">function getStateSyncer(uint8 superformRouterId_) external view returns (address stateSyncer_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>superformRouterId_</code></td><td><code>uint8</code></td><td>is the id of a state syncer</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>stateSyncer_</code></td><td><code>address</code></td><td>is the address of a state syncer</td></tr>
+</tbody></table>
+</div>
+<h3 id="getrouter"><a class="header" href="#getrouter">getRouter</a></h3>
+<p><em>gets the address of a router</em></p>
+<pre><code class="language-solidity">function getRouter(uint8 superformRouterId_) external view returns (address router_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>superformRouterId_</code></td><td><code>uint8</code></td><td>is the id of a state syncer</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>router_</code></td><td><code>address</code></td><td>is the address of a router</td></tr>
+</tbody></table>
+</div>
+<h3 id="getsuperformrouterid"><a class="header" href="#getsuperformrouterid">getSuperformRouterId</a></h3>
+<p><em>gets the id of a router</em></p>
+<pre><code class="language-solidity">function getSuperformRouterId(address router_) external view returns (uint8 superformRouterId_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>router_</code></td><td><code>address</code></td><td>is the address of a router</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>superformRouterId_</code></td><td><code>uint8</code></td><td>is the id of a superform router / state syncer</td></tr>
+</tbody></table>
+</div>
+<h3 id="isvalidstateregistry"><a class="header" href="#isvalidstateregistry">isValidStateRegistry</a></h3>
+<p><em>helps validate if an address is a valid state registry</em></p>
+<pre><code class="language-solidity">function isValidStateRegistry(address registryAddress_) external view returns (bool valid_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>registryAddress_</code></td><td><code>address</code></td><td>is the address of the state registry</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>valid_</code></td><td><code>bool</code></td><td>a flag indicating if its valid.</td></tr>
+</tbody></table>
+</div>
+<h3 id="isvalidambimpl"><a class="header" href="#isvalidambimpl">isValidAmbImpl</a></h3>
+<p><em>helps validate if an address is a valid amb implementation</em></p>
+<pre><code class="language-solidity">function isValidAmbImpl(address ambAddress_) external view returns (bool valid_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>ambAddress_</code></td><td><code>address</code></td><td>is the address of the amb implementation</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>valid_</code></td><td><code>bool</code></td><td>a flag indicating if its valid.</td></tr>
+</tbody></table>
+</div>
+<h3 id="isvalidbroadcastambimpl"><a class="header" href="#isvalidbroadcastambimpl">isValidBroadcastAmbImpl</a></h3>
+<p><em>helps validate if an address is a valid broadcast amb implementation</em></p>
+<pre><code class="language-solidity">function isValidBroadcastAmbImpl(address ambAddress_) external view returns (bool valid_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>ambAddress_</code></td><td><code>address</code></td><td>is the address of the broadcast amb implementation</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>valid_</code></td><td><code>bool</code></td><td>a flag indicating if its valid.</td></tr>
+</tbody></table>
+</div>
+<h3 id="getbridgevalidator"><a class="header" href="#getbridgevalidator">getBridgeValidator</a></h3>
+<p><em>gets the address of a bridge validator</em></p>
+<pre><code class="language-solidity">function getBridgeValidator(uint8 bridgeId_) external view returns (address bridgeValidator_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>bridgeId_</code></td><td><code>uint8</code></td><td>is the id of a bridge</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>bridgeValidator_</code></td><td><code>address</code></td><td>is the address of the form</td></tr>
+</tbody></table>
+</div>
+<h3 id="getambaddress"><a class="header" href="#getambaddress">getAmbAddress</a></h3>
+<p><em>gets the address of a amb</em></p>
+<pre><code class="language-solidity">function getAmbAddress(uint8 ambId_) external view returns (address ambAddress_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>ambId_</code></td><td><code>uint8</code></td><td>is the id of a bridge</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>ambAddress_</code></td><td><code>address</code></td><td>is the address of the form</td></tr>
+</tbody></table>
+</div>
+<h2 id="events"><a class="header" href="#events">Events</a></h2>
+<h3 id="setpermit2-1"><a class="header" href="#setpermit2-1">SetPermit2</a></h3>
+<p><em>emitted when permit2 is set.</em></p>
+<pre><code class="language-solidity">event SetPermit2(address indexed permit2);
+</code></pre>
+<h3 id="addressupdated"><a class="header" href="#addressupdated">AddressUpdated</a></h3>
+<p><em>is emitted when an address is set.</em></p>
+<pre><code class="language-solidity">event AddressUpdated(
+    bytes32 indexed protocolAddressId, uint64 indexed chainId, address indexed oldAddress, address newAddress
+);
+</code></pre>
+<h3 id="setbridgeaddress"><a class="header" href="#setbridgeaddress">SetBridgeAddress</a></h3>
+<p><em>is emitted when a new token bridge is configured.</em></p>
+<pre><code class="language-solidity">event SetBridgeAddress(uint256 indexed bridgeId, address indexed bridgeAddress);
+</code></pre>
+<h3 id="setbridgevalidator"><a class="header" href="#setbridgevalidator">SetBridgeValidator</a></h3>
+<p><em>is emitted when a new bridge validator is configured.</em></p>
+<pre><code class="language-solidity">event SetBridgeValidator(uint256 indexed bridgeId, address indexed bridgeValidator);
+</code></pre>
+<h3 id="setambaddress-1"><a class="header" href="#setambaddress-1">SetAmbAddress</a></h3>
+<p><em>is emitted when a new amb is configured.</em></p>
+<pre><code class="language-solidity">event SetAmbAddress(uint8 ambId_, address ambAddress_, bool isBroadcastAMB_);
+</code></pre>
+<h3 id="setstateregistryaddress-1"><a class="header" href="#setstateregistryaddress-1">SetStateRegistryAddress</a></h3>
+<p><em>is emitted when a new state registry is configured.</em></p>
+<pre><code class="language-solidity">event SetStateRegistryAddress(uint8 registryId_, address registryAddress_);
+</code></pre>
+<h3 id="setrouterinfo-1"><a class="header" href="#setrouterinfo-1">SetRouterInfo</a></h3>
+<p><em>is emitted when a new router/state syncer is configured.</em></p>
+<pre><code class="language-solidity">event SetRouterInfo(uint8 superFormRouterId_, address stateSyncer_, address router_);
+</code></pre>
+<h3 id="setdelay-1"><a class="header" href="#setdelay-1">SetDelay</a></h3>
+<p><em>is emitted when a new delay is configured.</em></p>
+<pre><code class="language-solidity">event SetDelay(uint256 oldDelay_, uint256 newDelay_);
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../../src/interfaces/ISuperRBAC.sol/interface.ISuperRBAC.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../../src/interfaces/ISuperTransmuter.sol/interface.ISuperTransmuter.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../../src/interfaces/ISuperRBAC.sol/interface.ISuperRBAC.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../../src/interfaces/ISuperTransmuter.sol/interface.ISuperTransmuter.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../../elasticlunr.min.js"></script>
+        <script src="../../../mark.min.js"></script>
+        <script src="../../../searcher.js"></script>
+
+        <script src="../../../clipboard.min.js"></script>
+        <script src="../../../highlight.js"></script>
+        <script src="../../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../../solidity.min.js"></script>
+
+
+    </div>
+    </body>
+</html>

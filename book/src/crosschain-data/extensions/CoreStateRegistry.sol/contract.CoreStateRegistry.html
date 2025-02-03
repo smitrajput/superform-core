@@ -1,0 +1,620 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>CoreStateRegistry</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../../favicon.png">
+        <link rel="stylesheet" href="../../../../css/variables.css">
+        <link rel="stylesheet" href="../../../../css/general.css">
+        <link rel="stylesheet" href="../../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../../../highlight.css">
+        <link rel="stylesheet" href="../../../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../../../book.css">
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../../../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../../../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/smitrajput/superform-core" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="corestateregistry"><a class="header" href="#corestateregistry">CoreStateRegistry</a></h1>
+<p><a href="https://github.com/smitrajput/superform-core/blob/2b1abb2f4e63862837f97d3914b36257db87d926/src/crosschain-data/extensions/CoreStateRegistry.sol">Git Source</a></p>
+<p><strong>Inherits:</strong>
+<a href="/src/crosschain-data/BaseStateRegistry.sol/abstract.BaseStateRegistry.html">BaseStateRegistry</a>, <a href="/src/interfaces/ICoreStateRegistry.sol/interface.ICoreStateRegistry.html">ICoreStateRegistry</a></p>
+<p><strong>Author:</strong>
+Zeropoint Labs</p>
+<p><em>enables communication between Superform Core Contracts deployed on all supported networks</em></p>
+<h2 id="state-variables"><a class="header" href="#state-variables">State Variables</a></h2>
+<h3 id="faileddeposits"><a class="header" href="#faileddeposits">failedDeposits</a></h3>
+<p><em>just stores the superformIds that failed in a specific payload id</em></p>
+<pre><code class="language-solidity">mapping(uint256 payloadId =&gt; FailedDeposit) internal failedDeposits;
+</code></pre>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<h3 id="onlycorestateregistryprocessor"><a class="header" href="#onlycorestateregistryprocessor">onlyCoreStateRegistryProcessor</a></h3>
+<pre><code class="language-solidity">modifier onlyCoreStateRegistryProcessor();
+</code></pre>
+<h3 id="onlycorestateregistryupdater"><a class="header" href="#onlycorestateregistryupdater">onlyCoreStateRegistryUpdater</a></h3>
+<pre><code class="language-solidity">modifier onlyCoreStateRegistryUpdater();
+</code></pre>
+<h3 id="onlycorestateregistryrescuer"><a class="header" href="#onlycorestateregistryrescuer">onlyCoreStateRegistryRescuer</a></h3>
+<pre><code class="language-solidity">modifier onlyCoreStateRegistryRescuer();
+</code></pre>
+<h3 id="onlysender"><a class="header" href="#onlysender">onlySender</a></h3>
+<pre><code class="language-solidity">modifier onlySender() override;
+</code></pre>
+<h3 id="isvalidpayloadid"><a class="header" href="#isvalidpayloadid">isValidPayloadId</a></h3>
+<pre><code class="language-solidity">modifier isValidPayloadId(uint256 payloadId_);
+</code></pre>
+<h3 id="constructor"><a class="header" href="#constructor">constructor</a></h3>
+<pre><code class="language-solidity">constructor(ISuperRegistry superRegistry_) BaseStateRegistry(superRegistry_);
+</code></pre>
+<h3 id="updatedepositpayload"><a class="header" href="#updatedepositpayload">updateDepositPayload</a></h3>
+<p><em>allows accounts with {CORE_STATE_REGISTRY_UPDATER_ROLE} to modify a received cross-chain deposit payload.</em></p>
+<pre><code class="language-solidity">function updateDepositPayload(
+    uint256 payloadId_,
+    uint256[] calldata finalAmounts_
+)
+    external
+    virtual
+    override
+    onlyCoreStateRegistryUpdater
+    isValidPayloadId(payloadId_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>payloadId_</code></td><td><code>uint256</code></td><td>is the identifier of the cross-chain payload to be updated.</td></tr>
+<tr><td><code>finalAmounts_</code></td><td><code>uint256[]</code></td><td>is the amount to be updated. NOTE: amounts cannot be updated beyond user specified safe slippage limit.</td></tr>
+</tbody></table>
+</div>
+<h3 id="updatewithdrawpayload"><a class="header" href="#updatewithdrawpayload">updateWithdrawPayload</a></h3>
+<p><em>set the new payload body</em></p>
+<p><em>set new message quorum</em></p>
+<p><em>re-set previous message quorum to 0</em></p>
+<p><em>if payload is processed at this stage then it is failing</em></p>
+<pre><code class="language-solidity">function updateWithdrawPayload(
+    uint256 payloadId_,
+    bytes[] calldata txData_
+)
+    external
+    virtual
+    override
+    onlyCoreStateRegistryUpdater
+    isValidPayloadId(payloadId_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>payloadId_</code></td><td><code>uint256</code></td><td>is the identifier of the cross-chain payload to be updated.</td></tr>
+<tr><td><code>txData_</code></td><td><code>bytes[]</code></td><td>is the transaction data to be updated.</td></tr>
+</tbody></table>
+</div>
+<h3 id="processpayload"><a class="header" href="#processpayload">processPayload</a></h3>
+<p><em>validate payload update</em></p>
+<p><em>set the new payload body</em></p>
+<p><em>set new message quorum</em></p>
+<p><em>re-set previous message quorum to 0</em></p>
+<p><em>define the payload status as updated</em></p>
+<pre><code class="language-solidity">function processPayload(uint256 payloadId_)
+    external
+    payable
+    virtual
+    override
+    onlyCoreStateRegistryProcessor
+    isValidPayloadId(payloadId_);
+</code></pre>
+<h3 id="proposerescuefaileddeposits"><a class="header" href="#proposerescuefaileddeposits">proposeRescueFailedDeposits</a></h3>
+<p><em>sets status as processed to prevent re-entrancy</em></p>
+<p><em>mint superPositions for successful deposits or remint for failed withdraws</em></p>
+<p><em>for initial payload processing</em></p>
+<pre><code class="language-solidity">function proposeRescueFailedDeposits(
+    uint256 payloadId_,
+    uint256[] memory proposedAmounts_
+)
+    external
+    override
+    onlyCoreStateRegistryRescuer;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>payloadId_</code></td><td><code>uint256</code></td><td>is the identifier of the cross-chain payload.</td></tr>
+<tr><td><code>proposedAmounts_</code></td><td><code>uint256[]</code></td><td>is the array of proposed rescue amounts.</td></tr>
+</tbody></table>
+</div>
+<h3 id="disputerescuefaileddeposits"><a class="header" href="#disputerescuefaileddeposits">disputeRescueFailedDeposits</a></h3>
+<p>should challenge within the delay window configured on SuperRegistry</p>
+<p><em>allows refund receivers to challenge their final receiving token amounts on failed deposits</em></p>
+<pre><code class="language-solidity">function disputeRescueFailedDeposits(uint256 payloadId_) external override;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>payloadId_</code></td><td><code>uint256</code></td><td>is the identifier of the cross-chain payload</td></tr>
+</tbody></table>
+</div>
+<h3 id="finalizerescuefaileddeposits"><a class="header" href="#finalizerescuefaileddeposits">finalizeRescueFailedDeposits</a></h3>
+<p>is an open function &amp; can be executed by anyone</p>
+<p><em>the msg sender should be the refund address (or) the disputer</em></p>
+<p><em>the timelock is already elapsed to dispute</em></p>
+<p><em>just can reset last proposed time here, since amounts should be updated again to
+pass the lastProposedTimestamp zero check in finalize</em></p>
+<pre><code class="language-solidity">function finalizeRescueFailedDeposits(uint256 payloadId_) external override;
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>payloadId_</code></td><td><code>uint256</code></td><td>is the identifier of the cross-chain payload</td></tr>
+</tbody></table>
+</div>
+<h3 id="getfaileddeposits"><a class="header" href="#getfaileddeposits">getFailedDeposits</a></h3>
+<p><em>the timelock is elapsed</em></p>
+<p><em>deleted to prevent re-entrancy</em></p>
+<p><em>refunds the amount to user specified refund address</em></p>
+<pre><code class="language-solidity">function getFailedDeposits(uint256 payloadId_)
+    external
+    view
+    override
+    returns (uint256[] memory superformIds, uint256[] memory amounts);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>payloadId_</code></td><td><code>uint256</code></td><td>is the identifier of the cross-chain payload.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>superformIds</code></td><td><code>uint256[]</code></td><td>superformIds_ is the identifiers of superforms in the payloadId that got failed.</td></tr>
+<tr><td><code>amounts</code></td><td><code>uint256[]</code></td><td></td></tr>
+</tbody></table>
+</div>
+<h3 id="_hasrole"><a class="header" href="#_hasrole">_hasRole</a></h3>
+<p><em>returns if an address has a specific role</em></p>
+<pre><code class="language-solidity">function _hasRole(bytes32 id_, address addressToCheck_) internal view returns (bool);
+</code></pre>
+<h3 id="_getstatesyncer"><a class="header" href="#_getstatesyncer">_getStateSyncer</a></h3>
+<p><em>returns the state syncer address for id</em></p>
+<pre><code class="language-solidity">function _getStateSyncer(uint8 id_) internal view returns (address stateSyncer);
+</code></pre>
+<h3 id="_getstateregistryid"><a class="header" href="#_getstateregistryid">_getStateRegistryId</a></h3>
+<p><em>returns the registry address for id</em></p>
+<pre><code class="language-solidity">function _getStateRegistryId(address registryAddress_) internal view returns (uint8 id);
+</code></pre>
+<h3 id="_getaddress"><a class="header" href="#_getaddress">_getAddress</a></h3>
+<p><em>returns the address from super registry</em></p>
+<pre><code class="language-solidity">function _getAddress(bytes32 id_) internal view returns (address);
+</code></pre>
+<h3 id="_getdelay"><a class="header" href="#_getdelay">_getDelay</a></h3>
+<p><em>returns the current timelock delay</em></p>
+<pre><code class="language-solidity">function _getDelay() internal view returns (uint256);
+</code></pre>
+<h3 id="_getsuperrbac"><a class="header" href="#_getsuperrbac">_getSuperRBAC</a></h3>
+<p><em>returns the superRBAC address</em></p>
+<pre><code class="language-solidity">function _getSuperRBAC() internal view returns (address);
+</code></pre>
+<h3 id="_getrequiredmessagingquorum"><a class="header" href="#_getrequiredmessagingquorum">_getRequiredMessagingQuorum</a></h3>
+<p><em>returns the required quorum for the src chain id from super registry</em></p>
+<pre><code class="language-solidity">function _getRequiredMessagingQuorum(uint64 chainId_) internal view returns (uint256);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>chainId_</code></td><td><code>uint64</code></td><td>is the src chain id</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>uint256</code></td><td>the quorum configured for the chain id</td></tr>
+</tbody></table>
+</div>
+<h3 id="_getbridgevalidator"><a class="header" href="#_getbridgevalidator">_getBridgeValidator</a></h3>
+<p><em>returns the required quorum for the src chain id from super registry</em></p>
+<pre><code class="language-solidity">function _getBridgeValidator(uint8 bridgeId_) internal view returns (IBridgeValidator validator);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>bridgeId_</code></td><td><code>uint8</code></td><td>is the bridge id</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>validator</code></td><td><code>IBridgeValidator</code></td><td>is the address of the validator contract</td></tr>
+</tbody></table>
+</div>
+<h3 id="_retrievepayloadheaderandbody"><a class="header" href="#_retrievepayloadheaderandbody">_retrievePayloadHeaderAndBody</a></h3>
+<p><em>retrieves information associated with the payload and validates quorum</em></p>
+<pre><code class="language-solidity">function _retrievePayloadHeaderAndBody(uint256 payloadId_)
+    internal
+    view
+    returns (
+        uint256 payloadHeader_,
+        bytes memory payloadBody_,
+        AMBMessage memory message,
+        bytes32 payloadProof,
+        uint8 txType,
+        uint8 callbackType,
+        uint8 isMulti,
+        uint8 registryId,
+        address srcSender,
+        uint64 srcChainId
+    );
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>payloadId_</code></td><td><code>uint256</code></td><td>is the payload id</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>payloadHeader_</code></td><td><code>uint256</code></td><td>is the payload header</td></tr>
+<tr><td><code>payloadBody_</code></td><td><code>bytes</code></td><td>is the payload body</td></tr>
+<tr><td><code>message</code></td><td><code>AMBMessage</code></td><td>is the AMBMessage struct</td></tr>
+<tr><td><code>payloadProof</code></td><td><code>bytes32</code></td><td>is the payload proof</td></tr>
+<tr><td><code>txType</code></td><td><code>uint8</code></td><td>is the transaction type</td></tr>
+<tr><td><code>callbackType</code></td><td><code>uint8</code></td><td>is the callback type</td></tr>
+<tr><td><code>isMulti</code></td><td><code>uint8</code></td><td>is the multi flag</td></tr>
+<tr><td><code>registryId</code></td><td><code>uint8</code></td><td>is the registry id</td></tr>
+<tr><td><code>srcSender</code></td><td><code>address</code></td><td>is the source sender</td></tr>
+<tr><td><code>srcChainId</code></td><td><code>uint64</code></td><td>is the source chain id</td></tr>
+</tbody></table>
+</div>
+<h3 id="_updatemultivaultdepositpayload"><a class="header" href="#_updatemultivaultdepositpayload">_updateMultiVaultDepositPayload</a></h3>
+<p><em>helper function to update multi vault deposit payload</em></p>
+<pre><code class="language-solidity">function _updateMultiVaultDepositPayload(
+    uint256 payloadId_,
+    bytes memory prevPayloadBody_,
+    uint256[] calldata finalAmounts_
+)
+    internal
+    returns (bytes memory newPayloadBody_, PayloadState finalState_);
+</code></pre>
+<h3 id="_updatesinglevaultdepositpayload"><a class="header" href="#_updatesinglevaultdepositpayload">_updateSingleVaultDepositPayload</a></h3>
+<p><em>compare number of vaults to update with provided finalAmounts length</em></p>
+<p><em>validate payload update</em></p>
+<p><em>helper function to update single vault deposit payload</em></p>
+<pre><code class="language-solidity">function _updateSingleVaultDepositPayload(
+    uint256 payloadId_,
+    bytes memory prevPayloadBody_,
+    uint256 finalAmount_
+)
+    internal
+    returns (bytes memory newPayloadBody_, PayloadState finalState_);
+</code></pre>
+<h3 id="_updatewithdrawpayload"><a class="header" href="#_updatewithdrawpayload">_updateWithdrawPayload</a></h3>
+<p><em>validate payload update</em></p>
+<p><em>sets amount to zero and will mark the payload as UPDATED</em></p>
+<p><em>sets amount to zero and will mark the payload as PROCESSED</em></p>
+<p><em>helper function to update multi vault withdraw payload</em></p>
+<pre><code class="language-solidity">function _updateWithdrawPayload(
+    bytes memory prevPayloadBody_,
+    address srcSender_,
+    uint64 srcChainId_,
+    bytes[] calldata txData_,
+    uint8 multi
+)
+    internal
+    view
+    returns (bytes memory);
+</code></pre>
+<h3 id="_validateandupdatetxdata"><a class="header" href="#_validateandupdatetxdata">_validateAndUpdateTxData</a></h3>
+<p><em>validates the incoming update data</em></p>
+<pre><code class="language-solidity">function _validateAndUpdateTxData(
+    bytes[] calldata txData_,
+    InitMultiVaultData memory multiVaultData_,
+    address srcSender_,
+    uint64 srcChainId_,
+    uint64 dstChainId_
+)
+    internal
+    view
+    returns (InitMultiVaultData memory);
+</code></pre>
+<h3 id="_processmultiwithdrawal"><a class="header" href="#_processmultiwithdrawal">_processMultiWithdrawal</a></h3>
+<pre><code class="language-solidity">function _processMultiWithdrawal(
+    uint256 payloadId_,
+    bytes memory payload_,
+    address srcSender_,
+    uint64 srcChainId_
+)
+    internal
+    returns (bytes memory);
+</code></pre>
+<h3 id="_processmultideposit"><a class="header" href="#_processmultideposit">_processMultiDeposit</a></h3>
+<p><em>it is critical to validate that the action is being performed to the correct chainId coming from
+the superform</em></p>
+<p><em>Store destination payloadId_ &amp; index in extraFormData (tbd: 1-step flow doesnt need this)</em></p>
+<p><em>marks the indexes that don't require a callback re-mint of shares (successful
+withdraws)</em></p>
+<p><em>detect if there is at least one failed withdraw</em></p>
+<p><em>if at least one error happens, the shares will be re-minted for the affected superformIds</em></p>
+<pre><code class="language-solidity">function _processMultiDeposit(
+    uint256 payloadId_,
+    bytes memory payload_,
+    address srcSender_,
+    uint64 srcChainId_
+)
+    internal
+    returns (bytes memory);
+</code></pre>
+<h3 id="_processsinglewithdrawal"><a class="header" href="#_processsinglewithdrawal">_processSingleWithdrawal</a></h3>
+<p>dstAmounts has same size of the number of vaults. If a given deposit fails, we are minting 0
+SPs back on source (slight gas waste)</p>
+<p><em>it is critical to validate that the action is being performed to the correct chainId coming
+from the superform</em></p>
+<p><em>marks the indexes that require a callback mint of shares (successful)</em></p>
+<p><em>cleaning unused approval</em></p>
+<p><em>if any deposit fails, we mark errors as true and add it to failedDepositSuperformIds
+mapping for future rescuing</em></p>
+<p><em>issue superPositions if at least one vault deposit passed</em></p>
+<pre><code class="language-solidity">function _processSingleWithdrawal(
+    uint256 payloadId_,
+    bytes memory payload_,
+    address srcSender_,
+    uint64 srcChainId_
+)
+    internal
+    returns (bytes memory);
+</code></pre>
+<h3 id="_processsingledeposit"><a class="header" href="#_processsingledeposit">_processSingleDeposit</a></h3>
+<p><em>Withdraw from superform
+https://solidity-by-example.org/try-catch/</em></p>
+<pre><code class="language-solidity">function _processSingleDeposit(
+    uint256 payloadId_,
+    bytes memory payload_,
+    address srcSender_,
+    uint64 srcChainId_
+)
+    internal
+    returns (bytes memory);
+</code></pre>
+<h3 id="_processacknowledgement"><a class="header" href="#_processacknowledgement">_processAcknowledgement</a></h3>
+<p><em>deposit to superform</em></p>
+<p><em>cleaning unused approval</em></p>
+<p><em>if any deposit fails, add it to failedDepositSuperformIds mapping for future rescuing</em></p>
+<pre><code class="language-solidity">function _processAcknowledgement(
+    uint256 payloadId_,
+    bytes32 proof_,
+    uint64 srcChainId_,
+    bytes memory returnMessage_
+)
+    internal;
+</code></pre>
+<h3 id="_constructmultireturndata"><a class="header" href="#_constructmultireturndata">_constructMultiReturnData</a></h3>
+<p>depositSync and withdrawSync internal method for sending message back to the source chain</p>
+<p><em>if deposits succeeded or some withdrawal failed, dispatch a callback</em></p>
+<pre><code class="language-solidity">function _constructMultiReturnData(
+    address srcSender_,
+    uint256 payloadId_,
+    uint8 superformRouterId_,
+    TransactionType txType,
+    CallbackType returnType_,
+    uint256[] memory superformIds_,
+    uint256[] memory amounts_
+)
+    internal
+    view
+    returns (bytes memory);
+</code></pre>
+<h3 id="_constructsinglereturndata"><a class="header" href="#_constructsinglereturndata">_constructSingleReturnData</a></h3>
+<p>depositSync and withdrawSync internal method for sending message back to the source chain</p>
+<p><em>Send Data to Source to issue superform positions (failed withdraws and successful deposits)</em></p>
+<pre><code class="language-solidity">function _constructSingleReturnData(
+    address srcSender_,
+    uint256 payloadId_,
+    uint8 superformRouterId_,
+    TransactionType txType,
+    CallbackType returnType_,
+    uint256 superformId_,
+    uint256 amount_
+)
+    internal
+    view
+    returns (bytes memory);
+</code></pre>
+<h3 id="_dispatchacknowledgement"><a class="header" href="#_dispatchacknowledgement">_dispatchAcknowledgement</a></h3>
+<p><em>Send Data to Source to issue superform positions (failed withdraws and successful deposits)</em></p>
+<p><em>calls the appropriate dispatch function according to the ackExtraData the keeper fed initially</em></p>
+<pre><code class="language-solidity">function _dispatchAcknowledgement(uint64 dstChainId_, uint8[] memory ambIds_, bytes memory message_) internal;
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../../../src/crosschain-data/extensions/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../../../src/crosschain-data/extensions/TimelockStateRegistry.sol/contract.TimelockStateRegistry.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../../../src/crosschain-data/extensions/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../../../src/crosschain-data/extensions/TimelockStateRegistry.sol/contract.TimelockStateRegistry.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../../../elasticlunr.min.js"></script>
+        <script src="../../../../mark.min.js"></script>
+        <script src="../../../../searcher.js"></script>
+
+        <script src="../../../../clipboard.min.js"></script>
+        <script src="../../../../highlight.js"></script>
+        <script src="../../../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../../../solidity.min.js"></script>
+
+
+    </div>
+    </body>
+</html>

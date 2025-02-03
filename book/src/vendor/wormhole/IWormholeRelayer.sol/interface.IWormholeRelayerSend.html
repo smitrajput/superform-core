@@ -1,0 +1,663 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>IWormholeRelayerSend</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../../favicon.png">
+        <link rel="stylesheet" href="../../../../css/variables.css">
+        <link rel="stylesheet" href="../../../../css/general.css">
+        <link rel="stylesheet" href="../../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../../../highlight.css">
+        <link rel="stylesheet" href="../../../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../../../book.css">
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../../../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../../../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/smitrajput/superform-core" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="iwormholerelayersend"><a class="header" href="#iwormholerelayersend">IWormholeRelayerSend</a></h1>
+<p><a href="https://github.com/smitrajput/superform-core/blob/2b1abb2f4e63862837f97d3914b36257db87d926/src/vendor/wormhole/IWormholeRelayer.sol">Git Source</a></p>
+<p><strong>Inherits:</strong>
+<a href="/src/vendor/wormhole/IWormholeRelayer.sol/interface.IWormholeRelayerBase.html">IWormholeRelayerBase</a></p>
+<p>The interface to request deliveries</p>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<h3 id="sendpayloadtoevm"><a class="header" href="#sendpayloadtoevm">sendPayloadToEvm</a></h3>
+<p>Publishes an instruction for the default delivery provider
+to relay a payload to the address <code>targetAddress</code> on chain <code>targetChain</code>
+with gas limit <code>gasLimit</code> and <code>msg.value</code> equal to <code>receiverValue</code>
+<code>targetAddress</code> must implement the IWormholeReceiver interface
+This function must be called with <code>msg.value</code> equal to <code>quoteEVMDeliveryPrice(targetChain, receiverValue, gasLimit)</code>
+Any refunds (from leftover gas) will be paid to the delivery provider. In order to receive the refunds, use the
+<code>sendPayloadToEvm</code> function
+with <code>refundChain</code> and <code>refundAddress</code> as parameters</p>
+<pre><code class="language-solidity">function sendPayloadToEvm(
+    uint16 targetChain,
+    address targetAddress,
+    bytes memory payload,
+    uint256 receiverValue,
+    uint256 gasLimit
+)
+    external
+    payable
+    returns (uint64 sequence);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>in Wormhole Chain ID format</td></tr>
+<tr><td><code>targetAddress</code></td><td><code>address</code></td><td>address to call on targetChain (that implements IWormholeReceiver)</td></tr>
+<tr><td><code>payload</code></td><td><code>bytes</code></td><td>arbitrary bytes to pass in as parameter in call to <code>targetAddress</code></td></tr>
+<tr><td><code>receiverValue</code></td><td><code>uint256</code></td><td>msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>gasLimit</code></td><td><code>uint256</code></td><td>gas limit with which to call <code>targetAddress</code>.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>sequence</code></td><td><code>uint64</code></td><td>sequence number of published VAA containing delivery instructions</td></tr>
+</tbody></table>
+</div>
+<h3 id="sendpayloadtoevm-1"><a class="header" href="#sendpayloadtoevm-1">sendPayloadToEvm</a></h3>
+<p>Publishes an instruction for the default delivery provider
+to relay a payload to the address <code>targetAddress</code> on chain <code>targetChain</code>
+with gas limit <code>gasLimit</code> and <code>msg.value</code> equal to <code>receiverValue</code>
+Any refunds (from leftover gas) will be sent to <code>refundAddress</code> on chain <code>refundChain</code>
+<code>targetAddress</code> must implement the IWormholeReceiver interface
+This function must be called with <code>msg.value</code> equal to <code>quoteEVMDeliveryPrice(targetChain, receiverValue, gasLimit)</code></p>
+<pre><code class="language-solidity">function sendPayloadToEvm(
+    uint16 targetChain,
+    address targetAddress,
+    bytes memory payload,
+    uint256 receiverValue,
+    uint256 gasLimit,
+    uint16 refundChain,
+    address refundAddress
+)
+    external
+    payable
+    returns (uint64 sequence);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>in Wormhole Chain ID format</td></tr>
+<tr><td><code>targetAddress</code></td><td><code>address</code></td><td>address to call on targetChain (that implements IWormholeReceiver)</td></tr>
+<tr><td><code>payload</code></td><td><code>bytes</code></td><td>arbitrary bytes to pass in as parameter in call to <code>targetAddress</code></td></tr>
+<tr><td><code>receiverValue</code></td><td><code>uint256</code></td><td>msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>gasLimit</code></td><td><code>uint256</code></td><td>gas limit with which to call <code>targetAddress</code>. Any units of gas unused will be refunded according to the <code>targetChainRefundPerGasUnused</code> rate quoted by the delivery provider</td></tr>
+<tr><td><code>refundChain</code></td><td><code>uint16</code></td><td>The chain to deliver any refund to, in Wormhole Chain ID format</td></tr>
+<tr><td><code>refundAddress</code></td><td><code>address</code></td><td>The address on <code>refundChain</code> to deliver any refund to</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>sequence</code></td><td><code>uint64</code></td><td>sequence number of published VAA containing delivery instructions</td></tr>
+</tbody></table>
+</div>
+<h3 id="sendvaastoevm"><a class="header" href="#sendvaastoevm">sendVaasToEvm</a></h3>
+<p>Publishes an instruction for the default delivery provider
+to relay a payload and VAAs specified by <code>vaaKeys</code> to the address <code>targetAddress</code> on chain <code>targetChain</code>
+with gas limit <code>gasLimit</code> and <code>msg.value</code> equal to <code>receiverValue</code>
+<code>targetAddress</code> must implement the IWormholeReceiver interface
+This function must be called with <code>msg.value</code> equal to <code>quoteEVMDeliveryPrice(targetChain, receiverValue, gasLimit)</code>
+Any refunds (from leftover gas) will be paid to the delivery provider. In order to receive the refunds, use the
+<code>sendVaasToEvm</code> function
+with <code>refundChain</code> and <code>refundAddress</code> as parameters</p>
+<pre><code class="language-solidity">function sendVaasToEvm(
+    uint16 targetChain,
+    address targetAddress,
+    bytes memory payload,
+    uint256 receiverValue,
+    uint256 gasLimit,
+    VaaKey[] memory vaaKeys
+)
+    external
+    payable
+    returns (uint64 sequence);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>in Wormhole Chain ID format</td></tr>
+<tr><td><code>targetAddress</code></td><td><code>address</code></td><td>address to call on targetChain (that implements IWormholeReceiver)</td></tr>
+<tr><td><code>payload</code></td><td><code>bytes</code></td><td>arbitrary bytes to pass in as parameter in call to <code>targetAddress</code></td></tr>
+<tr><td><code>receiverValue</code></td><td><code>uint256</code></td><td>msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>gasLimit</code></td><td><code>uint256</code></td><td>gas limit with which to call <code>targetAddress</code>.</td></tr>
+<tr><td><code>vaaKeys</code></td><td><code>VaaKey[]</code></td><td>Additional VAAs to pass in as parameter in call to <code>targetAddress</code></td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>sequence</code></td><td><code>uint64</code></td><td>sequence number of published VAA containing delivery instructions</td></tr>
+</tbody></table>
+</div>
+<h3 id="sendvaastoevm-1"><a class="header" href="#sendvaastoevm-1">sendVaasToEvm</a></h3>
+<p>Publishes an instruction for the default delivery provider
+to relay a payload and VAAs specified by <code>vaaKeys</code> to the address <code>targetAddress</code> on chain <code>targetChain</code>
+with gas limit <code>gasLimit</code> and <code>msg.value</code> equal to <code>receiverValue</code>
+Any refunds (from leftover gas) will be sent to <code>refundAddress</code> on chain <code>refundChain</code>
+<code>targetAddress</code> must implement the IWormholeReceiver interface
+This function must be called with <code>msg.value</code> equal to <code>quoteEVMDeliveryPrice(targetChain, receiverValue, gasLimit)</code></p>
+<pre><code class="language-solidity">function sendVaasToEvm(
+    uint16 targetChain,
+    address targetAddress,
+    bytes memory payload,
+    uint256 receiverValue,
+    uint256 gasLimit,
+    VaaKey[] memory vaaKeys,
+    uint16 refundChain,
+    address refundAddress
+)
+    external
+    payable
+    returns (uint64 sequence);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>in Wormhole Chain ID format</td></tr>
+<tr><td><code>targetAddress</code></td><td><code>address</code></td><td>address to call on targetChain (that implements IWormholeReceiver)</td></tr>
+<tr><td><code>payload</code></td><td><code>bytes</code></td><td>arbitrary bytes to pass in as parameter in call to <code>targetAddress</code></td></tr>
+<tr><td><code>receiverValue</code></td><td><code>uint256</code></td><td>msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>gasLimit</code></td><td><code>uint256</code></td><td>gas limit with which to call <code>targetAddress</code>. Any units of gas unused will be refunded according to the <code>targetChainRefundPerGasUnused</code> rate quoted by the delivery provider</td></tr>
+<tr><td><code>vaaKeys</code></td><td><code>VaaKey[]</code></td><td>Additional VAAs to pass in as parameter in call to <code>targetAddress</code></td></tr>
+<tr><td><code>refundChain</code></td><td><code>uint16</code></td><td>The chain to deliver any refund to, in Wormhole Chain ID format</td></tr>
+<tr><td><code>refundAddress</code></td><td><code>address</code></td><td>The address on <code>refundChain</code> to deliver any refund to</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>sequence</code></td><td><code>uint64</code></td><td>sequence number of published VAA containing delivery instructions</td></tr>
+</tbody></table>
+</div>
+<h3 id="sendtoevm"><a class="header" href="#sendtoevm">sendToEvm</a></h3>
+<p>Publishes an instruction for the delivery provider at <code>deliveryProviderAddress</code>
+to relay a payload and VAAs specified by <code>vaaKeys</code> to the address <code>targetAddress</code> on chain <code>targetChain</code>
+with gas limit <code>gasLimit</code> and <code>msg.value</code> equal to
+receiverValue + (arbitrary amount that is paid for by paymentForExtraReceiverValue of this chain's wei) in
+targetChain wei.
+Any refunds (from leftover gas) will be sent to <code>refundAddress</code> on chain <code>refundChain</code>
+<code>targetAddress</code> must implement the IWormholeReceiver interface
+This function must be called with <code>msg.value</code> equal to
+quoteEVMDeliveryPrice(targetChain, receiverValue, gasLimit, deliveryProviderAddress) +
+paymentForExtraReceiverValue</p>
+<pre><code class="language-solidity">function sendToEvm(
+    uint16 targetChain,
+    address targetAddress,
+    bytes memory payload,
+    uint256 receiverValue,
+    uint256 paymentForExtraReceiverValue,
+    uint256 gasLimit,
+    uint16 refundChain,
+    address refundAddress,
+    address deliveryProviderAddress,
+    VaaKey[] memory vaaKeys,
+    uint8 consistencyLevel
+)
+    external
+    payable
+    returns (uint64 sequence);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>in Wormhole Chain ID format</td></tr>
+<tr><td><code>targetAddress</code></td><td><code>address</code></td><td>address to call on targetChain (that implements IWormholeReceiver)</td></tr>
+<tr><td><code>payload</code></td><td><code>bytes</code></td><td>arbitrary bytes to pass in as parameter in call to <code>targetAddress</code></td></tr>
+<tr><td><code>receiverValue</code></td><td><code>uint256</code></td><td>msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>paymentForExtraReceiverValue</code></td><td><code>uint256</code></td><td>amount (in current chain currency units) to spend on extra receiverValue (in addition to the <code>receiverValue</code> specified)</td></tr>
+<tr><td><code>gasLimit</code></td><td><code>uint256</code></td><td>gas limit with which to call <code>targetAddress</code>. Any units of gas unused will be refunded according to the <code>targetChainRefundPerGasUnused</code> rate quoted by the delivery provider</td></tr>
+<tr><td><code>refundChain</code></td><td><code>uint16</code></td><td>The chain to deliver any refund to, in Wormhole Chain ID format</td></tr>
+<tr><td><code>refundAddress</code></td><td><code>address</code></td><td>The address on <code>refundChain</code> to deliver any refund to</td></tr>
+<tr><td><code>deliveryProviderAddress</code></td><td><code>address</code></td><td>The address of the desired delivery provider's implementation of IDeliveryProvider</td></tr>
+<tr><td><code>vaaKeys</code></td><td><code>VaaKey[]</code></td><td>Additional VAAs to pass in as parameter in call to <code>targetAddress</code></td></tr>
+<tr><td><code>consistencyLevel</code></td><td><code>uint8</code></td><td>Consistency level with which to publish the delivery instructions - see https://book.wormhole.com/wormhole/3_coreLayerContracts.html?highlight=consistency#consistency-levels</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>sequence</code></td><td><code>uint64</code></td><td>sequence number of published VAA containing delivery instructions</td></tr>
+</tbody></table>
+</div>
+<h3 id="send"><a class="header" href="#send">send</a></h3>
+<p>Publishes an instruction for the delivery provider at <code>deliveryProviderAddress</code>
+to relay a payload and VAAs specified by <code>vaaKeys</code> to the address <code>targetAddress</code> on chain <code>targetChain</code>
+with <code>msg.value</code> equal to
+receiverValue + (arbitrary amount that is paid for by paymentForExtraReceiverValue of this chain's wei) in
+targetChain wei.
+Any refunds (from leftover gas) will be sent to <code>refundAddress</code> on chain <code>refundChain</code>
+<code>targetAddress</code> must implement the IWormholeReceiver interface
+This function must be called with <code>msg.value</code> equal to
+quoteDeliveryPrice(targetChain, receiverValue, encodedExecutionParameters, deliveryProviderAddress) +
+paymentForExtraReceiverValue</p>
+<pre><code class="language-solidity">function send(
+    uint16 targetChain,
+    bytes32 targetAddress,
+    bytes memory payload,
+    uint256 receiverValue,
+    uint256 paymentForExtraReceiverValue,
+    bytes memory encodedExecutionParameters,
+    uint16 refundChain,
+    bytes32 refundAddress,
+    address deliveryProviderAddress,
+    VaaKey[] memory vaaKeys,
+    uint8 consistencyLevel
+)
+    external
+    payable
+    returns (uint64 sequence);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>in Wormhole Chain ID format</td></tr>
+<tr><td><code>targetAddress</code></td><td><code>bytes32</code></td><td>address to call on targetChain (that implements IWormholeReceiver), in Wormhole bytes32 format</td></tr>
+<tr><td><code>payload</code></td><td><code>bytes</code></td><td>arbitrary bytes to pass in as parameter in call to <code>targetAddress</code></td></tr>
+<tr><td><code>receiverValue</code></td><td><code>uint256</code></td><td>msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>paymentForExtraReceiverValue</code></td><td><code>uint256</code></td><td>amount (in current chain currency units) to spend on extra receiverValue (in addition to the <code>receiverValue</code> specified)</td></tr>
+<tr><td><code>encodedExecutionParameters</code></td><td><code>bytes</code></td><td>encoded information on how to execute delivery that may impact pricing e.g. for version EVM_V1, this is a struct that encodes the <code>gasLimit</code> with which to call <code>targetAddress</code></td></tr>
+<tr><td><code>refundChain</code></td><td><code>uint16</code></td><td>The chain to deliver any refund to, in Wormhole Chain ID format</td></tr>
+<tr><td><code>refundAddress</code></td><td><code>bytes32</code></td><td>The address on <code>refundChain</code> to deliver any refund to, in Wormhole bytes32 format</td></tr>
+<tr><td><code>deliveryProviderAddress</code></td><td><code>address</code></td><td>The address of the desired delivery provider's implementation of IDeliveryProvider</td></tr>
+<tr><td><code>vaaKeys</code></td><td><code>VaaKey[]</code></td><td>Additional VAAs to pass in as parameter in call to <code>targetAddress</code></td></tr>
+<tr><td><code>consistencyLevel</code></td><td><code>uint8</code></td><td>Consistency level with which to publish the delivery instructions - see https://book.wormhole.com/wormhole/3_coreLayerContracts.html?highlight=consistency#consistency-levels</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>sequence</code></td><td><code>uint64</code></td><td>sequence number of published VAA containing delivery instructions</td></tr>
+</tbody></table>
+</div>
+<h3 id="resendtoevm"><a class="header" href="#resendtoevm">resendToEvm</a></h3>
+<p>Requests a previously published delivery instruction to be redelivered
+(e.g. with a different delivery provider)
+This function must be called with <code>msg.value</code> equal to
+quoteEVMDeliveryPrice(targetChain, newReceiverValue, newGasLimit, newDeliveryProviderAddress)</p>
+<p>*** This will only be able to succeed if the following is true **</p>
+<ul>
+<li>newGasLimit &gt;= gas limit of the old instruction</li>
+<li>newReceiverValue &gt;= receiver value of the old instruction</li>
+<li>newDeliveryProvider's <code>targetChainRefundPerGasUnused</code> &gt;= old relay provider's
+<code>targetChainRefundPerGasUnused</code></li>
+</ul>
+<p>*** This will only be able to succeed if the following is true **</p>
+<ul>
+<li>newGasLimit &gt;= gas limit of the old instruction</li>
+<li>newReceiverValue &gt;= receiver value of the old instruction</li>
+<li>newDeliveryProvider's <code>targetChainRefundPerGasUnused</code> &gt;= old relay provider's
+<code>targetChainRefundPerGasUnused</code></li>
+</ul>
+<pre><code class="language-solidity">function resendToEvm(
+    VaaKey memory deliveryVaaKey,
+    uint16 targetChain,
+    uint256 newReceiverValue,
+    uint256 newGasLimit,
+    address newDeliveryProviderAddress
+)
+    external
+    payable
+    returns (uint64 sequence);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>deliveryVaaKey</code></td><td><code>VaaKey</code></td><td>VaaKey identifying the wormhole message containing the previously published delivery instructions</td></tr>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>The target chain that the original delivery targeted. Must match targetChain from original delivery instructions</td></tr>
+<tr><td><code>newReceiverValue</code></td><td><code>uint256</code></td><td>new msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>newGasLimit</code></td><td><code>uint256</code></td><td>gas limit with which to call <code>targetAddress</code>. Any units of gas unused will be refunded according to the <code>targetChainRefundPerGasUnused</code> rate quoted by the delivery provider, to the refund chain and address specified in the original request</td></tr>
+<tr><td><code>newDeliveryProviderAddress</code></td><td><code>address</code></td><td>The address of the desired delivery provider's implementation of IDeliveryProvider</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>sequence</code></td><td><code>uint64</code></td><td>sequence number of published VAA containing redelivery instructions</td></tr>
+</tbody></table>
+</div>
+<h3 id="resend"><a class="header" href="#resend">resend</a></h3>
+<p>Requests a previously published delivery instruction to be redelivered
+This function must be called with <code>msg.value</code> equal to
+quoteDeliveryPrice(targetChain, newReceiverValue, newEncodedExecutionParameters, newDeliveryProviderAddress)</p>
+<p>*** This will only be able to succeed if the following is true **</p>
+<ul>
+<li>(For EVM_V1) newGasLimit &gt;= gas limit of the old instruction</li>
+<li>newReceiverValue &gt;= receiver value of the old instruction</li>
+<li>(For EVM_V1) newDeliveryProvider's <code>targetChainRefundPerGasUnused</code> &gt;= old relay provider's
+<code>targetChainRefundPerGasUnused</code></li>
+</ul>
+<pre><code class="language-solidity">function resend(
+    VaaKey memory deliveryVaaKey,
+    uint16 targetChain,
+    uint256 newReceiverValue,
+    bytes memory newEncodedExecutionParameters,
+    address newDeliveryProviderAddress
+)
+    external
+    payable
+    returns (uint64 sequence);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>deliveryVaaKey</code></td><td><code>VaaKey</code></td><td>VaaKey identifying the wormhole message containing the previously published delivery instructions</td></tr>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>The target chain that the original delivery targeted. Must match targetChain from original delivery instructions</td></tr>
+<tr><td><code>newReceiverValue</code></td><td><code>uint256</code></td><td>new msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>newEncodedExecutionParameters</code></td><td><code>bytes</code></td><td>new encoded information on how to execute delivery that may impact pricing e.g. for version EVM_V1, this is a struct that encodes the <code>gasLimit</code> with which to call <code>targetAddress</code></td></tr>
+<tr><td><code>newDeliveryProviderAddress</code></td><td><code>address</code></td><td>The address of the desired delivery provider's implementation of IDeliveryProvider</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>sequence</code></td><td><code>uint64</code></td><td>sequence number of published VAA containing redelivery instructions</td></tr>
+</tbody></table>
+</div>
+<h3 id="quoteevmdeliveryprice"><a class="header" href="#quoteevmdeliveryprice">quoteEVMDeliveryPrice</a></h3>
+<p>Returns the price to request a relay to chain <code>targetChain</code>, using the default delivery provider</p>
+<pre><code class="language-solidity">function quoteEVMDeliveryPrice(
+    uint16 targetChain,
+    uint256 receiverValue,
+    uint256 gasLimit
+)
+    external
+    view
+    returns (uint256 nativePriceQuote, uint256 targetChainRefundPerGasUnused);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>in Wormhole Chain ID format</td></tr>
+<tr><td><code>receiverValue</code></td><td><code>uint256</code></td><td>msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>gasLimit</code></td><td><code>uint256</code></td><td>gas limit with which to call <code>targetAddress</code>.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>nativePriceQuote</code></td><td><code>uint256</code></td><td>Price, in units of current chain currency, that the delivery provider charges to perform the relay</td></tr>
+<tr><td><code>targetChainRefundPerGasUnused</code></td><td><code>uint256</code></td><td>amount of target chain currency that will be refunded per unit of gas unused, if a refundAddress is specified</td></tr>
+</tbody></table>
+</div>
+<h3 id="quoteevmdeliveryprice-1"><a class="header" href="#quoteevmdeliveryprice-1">quoteEVMDeliveryPrice</a></h3>
+<p>Returns the price to request a relay to chain <code>targetChain</code>, using delivery provider
+<code>deliveryProviderAddress</code></p>
+<pre><code class="language-solidity">function quoteEVMDeliveryPrice(
+    uint16 targetChain,
+    uint256 receiverValue,
+    uint256 gasLimit,
+    address deliveryProviderAddress
+)
+    external
+    view
+    returns (uint256 nativePriceQuote, uint256 targetChainRefundPerGasUnused);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>in Wormhole Chain ID format</td></tr>
+<tr><td><code>receiverValue</code></td><td><code>uint256</code></td><td>msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>gasLimit</code></td><td><code>uint256</code></td><td>gas limit with which to call <code>targetAddress</code>.</td></tr>
+<tr><td><code>deliveryProviderAddress</code></td><td><code>address</code></td><td>The address of the desired delivery provider's implementation of IDeliveryProvider</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>nativePriceQuote</code></td><td><code>uint256</code></td><td>Price, in units of current chain currency, that the delivery provider charges to perform the relay</td></tr>
+<tr><td><code>targetChainRefundPerGasUnused</code></td><td><code>uint256</code></td><td>amount of target chain currency that will be refunded per unit of gas unused, if a refundAddress is specified</td></tr>
+</tbody></table>
+</div>
+<h3 id="quotedeliveryprice"><a class="header" href="#quotedeliveryprice">quoteDeliveryPrice</a></h3>
+<p>Returns the price to request a relay to chain <code>targetChain</code>, using delivery provider
+<code>deliveryProviderAddress</code></p>
+<pre><code class="language-solidity">function quoteDeliveryPrice(
+    uint16 targetChain,
+    uint256 receiverValue,
+    bytes memory encodedExecutionParameters,
+    address deliveryProviderAddress
+)
+    external
+    view
+    returns (uint256 nativePriceQuote, bytes memory encodedExecutionInfo);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>in Wormhole Chain ID format</td></tr>
+<tr><td><code>receiverValue</code></td><td><code>uint256</code></td><td>msg.value that delivery provider should pass in for call to <code>targetAddress</code> (in targetChain currency units)</td></tr>
+<tr><td><code>encodedExecutionParameters</code></td><td><code>bytes</code></td><td>encoded information on how to execute delivery that may impact pricing e.g. for version EVM_V1, this is a struct that encodes the <code>gasLimit</code> with which to call <code>targetAddress</code></td></tr>
+<tr><td><code>deliveryProviderAddress</code></td><td><code>address</code></td><td>The address of the desired delivery provider's implementation of IDeliveryProvider</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>nativePriceQuote</code></td><td><code>uint256</code></td><td>Price, in units of current chain currency, that the delivery provider charges to perform the relay</td></tr>
+<tr><td><code>encodedExecutionInfo</code></td><td><code>bytes</code></td><td>encoded information on how the delivery will be executed e.g. for version EVM_V1, this is a struct that encodes the <code>gasLimit</code> and <code>targetChainRefundPerGasUnused</code> (which is the amount of target chain currency that will be refunded per unit of gas unused, if a refundAddress is specified)</td></tr>
+</tbody></table>
+</div>
+<h3 id="quotenativeforchain"><a class="header" href="#quotenativeforchain">quoteNativeForChain</a></h3>
+<p>Returns the (extra) amount of target chain currency that <code>targetAddress</code>
+will be called with, if the <code>paymentForExtraReceiverValue</code> field is set to <code>currentChainAmount</code></p>
+<pre><code class="language-solidity">function quoteNativeForChain(
+    uint16 targetChain,
+    uint256 currentChainAmount,
+    address deliveryProviderAddress
+)
+    external
+    view
+    returns (uint256 targetChainAmount);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChain</code></td><td><code>uint16</code></td><td>in Wormhole Chain ID format</td></tr>
+<tr><td><code>currentChainAmount</code></td><td><code>uint256</code></td><td>The value that <code>paymentForExtraReceiverValue</code> will be set to</td></tr>
+<tr><td><code>deliveryProviderAddress</code></td><td><code>address</code></td><td>The address of the desired delivery provider's implementation of IDeliveryProvider</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>targetChainAmount</code></td><td><code>uint256</code></td><td>The amount such that if <code>targetAddress</code> will be called with <code>msg.value</code> equal to receiverValue + targetChainAmount</td></tr>
+</tbody></table>
+</div>
+<h3 id="getdefaultdeliveryprovider"><a class="header" href="#getdefaultdeliveryprovider">getDefaultDeliveryProvider</a></h3>
+<p>Returns the address of the current default delivery provider</p>
+<pre><code class="language-solidity">function getDefaultDeliveryProvider() external view returns (address deliveryProvider);
+</code></pre>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>deliveryProvider</code></td><td><code>address</code></td><td>The address of (the default delivery provider)'s contract on this source chain. This must be a contract that implements IDeliveryProvider.</td></tr>
+</tbody></table>
+</div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../../../src/vendor/wormhole/IWormholeRelayer.sol/interface.IWormholeRelayerBase.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../../../src/vendor/wormhole/IWormholeRelayer.sol/interface.IWormholeRelayerDelivery.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../../../src/vendor/wormhole/IWormholeRelayer.sol/interface.IWormholeRelayerBase.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../../../src/vendor/wormhole/IWormholeRelayer.sol/interface.IWormholeRelayerDelivery.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../../../elasticlunr.min.js"></script>
+        <script src="../../../../mark.min.js"></script>
+        <script src="../../../../searcher.js"></script>
+
+        <script src="../../../../clipboard.min.js"></script>
+        <script src="../../../../highlight.js"></script>
+        <script src="../../../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../../../solidity.min.js"></script>
+
+
+    </div>
+    </body>
+</html>

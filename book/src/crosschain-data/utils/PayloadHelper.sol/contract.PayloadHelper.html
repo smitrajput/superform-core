@@ -1,0 +1,397 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>PayloadHelper</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../../favicon.png">
+        <link rel="stylesheet" href="../../../../css/variables.css">
+        <link rel="stylesheet" href="../../../../css/general.css">
+        <link rel="stylesheet" href="../../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../../../highlight.css">
+        <link rel="stylesheet" href="../../../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../../../book.css">
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../../../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../../../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/smitrajput/superform-core" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="payloadhelper"><a class="header" href="#payloadhelper">PayloadHelper</a></h1>
+<p><a href="https://github.com/smitrajput/superform-core/blob/2b1abb2f4e63862837f97d3914b36257db87d926/src/crosschain-data/utils/PayloadHelper.sol">Git Source</a></p>
+<p><strong>Inherits:</strong>
+<a href="/src/interfaces/IPayloadHelper.sol/interface.IPayloadHelper.html">IPayloadHelper</a></p>
+<p><strong>Author:</strong>
+ZeroPoint Labs</p>
+<p><em>helps decode payload data more easily. Used for off-chain purposes</em></p>
+<h2 id="state-variables"><a class="header" href="#state-variables">State Variables</a></h2>
+<h3 id="superregistry"><a class="header" href="#superregistry">superRegistry</a></h3>
+<pre><code class="language-solidity">ISuperRegistry public immutable superRegistry;
+</code></pre>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<h3 id="constructor"><a class="header" href="#constructor">constructor</a></h3>
+<pre><code class="language-solidity">constructor(address superRegistry_);
+</code></pre>
+<h3 id="decodecorestateregistrypayload"><a class="header" href="#decodecorestateregistrypayload">decodeCoreStateRegistryPayload</a></h3>
+<p><em>reads the payload from the core state registry and decodes it in a more detailed manner.</em></p>
+<pre><code class="language-solidity">function decodeCoreStateRegistryPayload(uint256 dstPayloadId_)
+    external
+    view
+    override
+    returns (
+        uint8 txType,
+        uint8 callbackType,
+        address srcSender,
+        uint64 srcChainId,
+        uint256[] memory amounts,
+        uint256[] memory slippage,
+        uint256[] memory superformIds,
+        uint256 srcPayloadId,
+        uint8 superformRouterId
+    );
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>dstPayloadId_</code></td><td><code>uint256</code></td><td>is the unique identifier of the payload received in dst core state registry</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>txType</code></td><td><code>uint8</code></td><td>is the type of transaction. check {TransactionType} enum in DataTypes.sol</td></tr>
+<tr><td><code>callbackType</code></td><td><code>uint8</code></td><td>is the type of payload. check {CallbackType} enum in DataTypes.sol</td></tr>
+<tr><td><code>srcSender</code></td><td><code>address</code></td><td>is the user who initiated the transaction on the srcChain</td></tr>
+<tr><td><code>srcChainId</code></td><td><code>uint64</code></td><td>is the unique identifier of the srcChain</td></tr>
+<tr><td><code>amounts</code></td><td><code>uint256[]</code></td><td>is the amount to deposit/withdraw</td></tr>
+<tr><td><code>slippage</code></td><td><code>uint256[]</code></td><td>is the max slippage configured by the user (only for deposits)</td></tr>
+<tr><td><code>superformIds</code></td><td><code>uint256[]</code></td><td>is the unique identifiers of the superforms</td></tr>
+<tr><td><code>srcPayloadId</code></td><td><code>uint256</code></td><td>is the identifier of the corresponding payload on srcChain</td></tr>
+<tr><td><code>superformRouterId</code></td><td><code>uint8</code></td><td>is the identifier of the superform router</td></tr>
+</tbody></table>
+</div>
+<h3 id="decodecorestateregistrypayloadliqdata"><a class="header" href="#decodecorestateregistrypayloadliqdata">decodeCoreStateRegistryPayloadLiqData</a></h3>
+<p><em>reads the payload from the core state registry and decodes liqData for it (to be used in withdraw cases)</em></p>
+<pre><code class="language-solidity">function decodeCoreStateRegistryPayloadLiqData(uint256 dstPayloadId_)
+    external
+    view
+    override
+    returns (
+        uint8[] memory bridgeIds,
+        bytes[] memory txDatas,
+        address[] memory tokens,
+        uint64[] memory liqDstChainIds,
+        uint256[] memory amountsIn,
+        uint256[] memory amountsOut,
+        uint256[] memory nativeAmounts,
+        bool[] memory hasDstSwaps,
+        address dstRefundAddress
+    );
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>dstPayloadId_</code></td><td><code>uint256</code></td><td>is the unique identifier of the payload received in dst core state registry</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>bridgeIds</code></td><td><code>uint8[]</code></td><td>is the ids of the bridges to be used</td></tr>
+<tr><td><code>txDatas</code></td><td><code>bytes[]</code></td><td>is the array of txData to be sent to the bridges</td></tr>
+<tr><td><code>tokens</code></td><td><code>address[]</code></td><td>is the tokens to be used in the liqData</td></tr>
+<tr><td><code>liqDstChainIds</code></td><td><code>uint64[]</code></td><td>are the final destination chain id for the underlying token (can be arbitrary on withdraws)</td></tr>
+<tr><td><code>amountsIn</code></td><td><code>uint256[]</code></td><td>are the from amounts to the liquidity bridge</td></tr>
+<tr><td><code>amountsOut</code></td><td><code>uint256[]</code></td><td>are the minimum amounts to be bridged through the liquidity bridge</td></tr>
+<tr><td><code>nativeAmounts</code></td><td><code>uint256[]</code></td><td>is the native amounts to be used in the liqData</td></tr>
+<tr><td><code>hasDstSwaps</code></td><td><code>bool[]</code></td><td>is the array of flags indicating if the original liqData has a dstSwaps</td></tr>
+<tr><td><code>dstRefundAddress</code></td><td><code>address</code></td><td>is the address to be used for refunds</td></tr>
+</tbody></table>
+</div>
+<h3 id="decodestatesyncerpayloadhistory"><a class="header" href="#decodestatesyncerpayloadhistory">decodeStateSyncerPayloadHistory</a></h3>
+<p><em>reads the payload header from a state syncer and decodes it.</em></p>
+<pre><code class="language-solidity">function decodeStateSyncerPayloadHistory(
+    uint256 srcPayloadId_,
+    uint8 superformRouterId_
+)
+    external
+    view
+    override
+    returns (uint8 txType, uint8 callbackType, uint8 multi, address srcSender, uint64 srcChainId);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>srcPayloadId_</code></td><td><code>uint256</code></td><td>is the unique identifier of the payload allocated by super router</td></tr>
+<tr><td><code>superformRouterId_</code></td><td><code>uint8</code></td><td>is the unique identifier of the superform router</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>txType</code></td><td><code>uint8</code></td><td>is the type of transaction. check {TransactionType} enum in DataTypes.sol</td></tr>
+<tr><td><code>callbackType</code></td><td><code>uint8</code></td><td>is the type of payload. check {CallbackType} enum in DataTypes.sol</td></tr>
+<tr><td><code>multi</code></td><td><code>uint8</code></td><td>isMulti indicates if the transaction involves operations to multiple vaults</td></tr>
+<tr><td><code>srcSender</code></td><td><code>address</code></td><td>is the user who initiated the transaction on the srcChain</td></tr>
+<tr><td><code>srcChainId</code></td><td><code>uint64</code></td><td>is the unique identifier of the srcChain</td></tr>
+</tbody></table>
+</div>
+<h3 id="decodetimelockpayload"><a class="header" href="#decodetimelockpayload">decodeTimeLockPayload</a></h3>
+<p><em>returns decoded two step form payloads</em></p>
+<pre><code class="language-solidity">function decodeTimeLockPayload(uint256 timelockPayloadId_)
+    external
+    view
+    override
+    returns (address srcSender, uint64 srcChainId, uint256 srcPayloadId, uint256 superformId, uint256 amount);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>timelockPayloadId_</code></td><td><code>uint256</code></td><td>is the unique identifier of payload in two step registry</td></tr>
+</tbody></table>
+</div>
+<h3 id="decodetimelockfailedpayload"><a class="header" href="#decodetimelockfailedpayload">decodeTimeLockFailedPayload</a></h3>
+<pre><code class="language-solidity">function decodeTimeLockFailedPayload(uint256 timelockPayloadId_)
+    external
+    view
+    override
+    returns (address srcSender, uint64 srcChainId, uint256 srcPayloadId, uint256 superformId, uint256 amount);
+</code></pre>
+<h2 id="structs"><a class="header" href="#structs">Structs</a></h2>
+<h3 id="decodedstpayloadinternalvars"><a class="header" href="#decodedstpayloadinternalvars">DecodeDstPayloadInternalVars</a></h3>
+<pre><code class="language-solidity">struct DecodeDstPayloadInternalVars {
+    uint8 txType;
+    uint8 callbackType;
+    address srcSender;
+    uint64 srcChainId;
+    uint256[] amounts;
+    uint256[] slippage;
+    uint256[] superformIds;
+    uint256 srcPayloadId;
+    uint8 superformRouterId;
+    uint8 multi;
+    ReturnMultiData rd;
+    ReturnSingleData rsd;
+    InitMultiVaultData imvd;
+    InitSingleVaultData isvd;
+}
+</code></pre>
+<h3 id="decodedstpayloadliqdatainternalvars"><a class="header" href="#decodedstpayloadliqdatainternalvars">DecodeDstPayloadLiqDataInternalVars</a></h3>
+<pre><code class="language-solidity">struct DecodeDstPayloadLiqDataInternalVars {
+    uint8 callbackType;
+    uint8 multi;
+    uint8[] bridgeIds;
+    bytes[] txDatas;
+    address[] liqDataTokens;
+    uint64[] liqDataChainIds;
+    uint256[] liqDataAmountsIn;
+    uint256[] liqDataAmountsOut;
+    uint256[] liqDataNativeAmounts;
+    bool[] hasDstSwaps;
+    address dstRefundAddress;
+    InitMultiVaultData imvd;
+    InitSingleVaultData isvd;
+    uint256 i;
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../../../src/crosschain-data/utils/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../../../src/crosschain-data/utils/QuorumManager.sol/abstract.QuorumManager.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../../../src/crosschain-data/utils/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../../../src/crosschain-data/utils/QuorumManager.sol/abstract.QuorumManager.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../../../elasticlunr.min.js"></script>
+        <script src="../../../../mark.min.js"></script>
+        <script src="../../../../searcher.js"></script>
+
+        <script src="../../../../clipboard.min.js"></script>
+        <script src="../../../../highlight.js"></script>
+        <script src="../../../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../../../solidity.min.js"></script>
+
+
+    </div>
+    </body>
+</html>

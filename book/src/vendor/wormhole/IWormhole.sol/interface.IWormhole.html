@@ -1,0 +1,416 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>IWormhole</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../../favicon.png">
+        <link rel="stylesheet" href="../../../../css/variables.css">
+        <link rel="stylesheet" href="../../../../css/general.css">
+        <link rel="stylesheet" href="../../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../../../highlight.css">
+        <link rel="stylesheet" href="../../../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../../../book.css">
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../../../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../../../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/smitrajput/superform-core" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="iwormhole"><a class="header" href="#iwormhole">IWormhole</a></h1>
+<p><a href="https://github.com/smitrajput/superform-core/blob/2b1abb2f4e63862837f97d3914b36257db87d926/src/vendor/wormhole/IWormhole.sol">Git Source</a></p>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<h3 id="publishmessage"><a class="header" href="#publishmessage">publishMessage</a></h3>
+<pre><code class="language-solidity">function publishMessage(
+    uint32 nonce,
+    bytes memory payload,
+    uint8 consistencyLevel
+)
+    external
+    payable
+    returns (uint64 sequence);
+</code></pre>
+<h3 id="initialize"><a class="header" href="#initialize">initialize</a></h3>
+<pre><code class="language-solidity">function initialize() external;
+</code></pre>
+<h3 id="parseandverifyvm"><a class="header" href="#parseandverifyvm">parseAndVerifyVM</a></h3>
+<pre><code class="language-solidity">function parseAndVerifyVM(bytes calldata encodedVM)
+    external
+    view
+    returns (VM memory vm, bool valid, string memory reason);
+</code></pre>
+<h3 id="verifyvm"><a class="header" href="#verifyvm">verifyVM</a></h3>
+<pre><code class="language-solidity">function verifyVM(VM memory vm) external view returns (bool valid, string memory reason);
+</code></pre>
+<h3 id="verifysignatures"><a class="header" href="#verifysignatures">verifySignatures</a></h3>
+<pre><code class="language-solidity">function verifySignatures(
+    bytes32 hash,
+    Signature[] memory signatures,
+    GuardianSet memory guardianSet
+)
+    external
+    pure
+    returns (bool valid, string memory reason);
+</code></pre>
+<h3 id="parsevm"><a class="header" href="#parsevm">parseVM</a></h3>
+<pre><code class="language-solidity">function parseVM(bytes memory encodedVM) external pure returns (VM memory vm);
+</code></pre>
+<h3 id="quorum"><a class="header" href="#quorum">quorum</a></h3>
+<pre><code class="language-solidity">function quorum(uint256 numGuardians) external pure returns (uint256 numSignaturesRequiredForQuorum);
+</code></pre>
+<h3 id="getguardianset"><a class="header" href="#getguardianset">getGuardianSet</a></h3>
+<pre><code class="language-solidity">function getGuardianSet(uint32 index) external view returns (GuardianSet memory);
+</code></pre>
+<h3 id="getcurrentguardiansetindex"><a class="header" href="#getcurrentguardiansetindex">getCurrentGuardianSetIndex</a></h3>
+<pre><code class="language-solidity">function getCurrentGuardianSetIndex() external view returns (uint32);
+</code></pre>
+<h3 id="getguardiansetexpiry"><a class="header" href="#getguardiansetexpiry">getGuardianSetExpiry</a></h3>
+<pre><code class="language-solidity">function getGuardianSetExpiry() external view returns (uint32);
+</code></pre>
+<h3 id="governanceactionisconsumed"><a class="header" href="#governanceactionisconsumed">governanceActionIsConsumed</a></h3>
+<pre><code class="language-solidity">function governanceActionIsConsumed(bytes32 hash) external view returns (bool);
+</code></pre>
+<h3 id="isinitialized"><a class="header" href="#isinitialized">isInitialized</a></h3>
+<pre><code class="language-solidity">function isInitialized(address impl) external view returns (bool);
+</code></pre>
+<h3 id="chainid"><a class="header" href="#chainid">chainId</a></h3>
+<pre><code class="language-solidity">function chainId() external view returns (uint16);
+</code></pre>
+<h3 id="isfork"><a class="header" href="#isfork">isFork</a></h3>
+<pre><code class="language-solidity">function isFork() external view returns (bool);
+</code></pre>
+<h3 id="governancechainid"><a class="header" href="#governancechainid">governanceChainId</a></h3>
+<pre><code class="language-solidity">function governanceChainId() external view returns (uint16);
+</code></pre>
+<h3 id="governancecontract"><a class="header" href="#governancecontract">governanceContract</a></h3>
+<pre><code class="language-solidity">function governanceContract() external view returns (bytes32);
+</code></pre>
+<h3 id="messagefee"><a class="header" href="#messagefee">messageFee</a></h3>
+<pre><code class="language-solidity">function messageFee() external view returns (uint256);
+</code></pre>
+<h3 id="evmchainid"><a class="header" href="#evmchainid">evmChainId</a></h3>
+<pre><code class="language-solidity">function evmChainId() external view returns (uint256);
+</code></pre>
+<h3 id="nextsequence"><a class="header" href="#nextsequence">nextSequence</a></h3>
+<pre><code class="language-solidity">function nextSequence(address emitter) external view returns (uint64);
+</code></pre>
+<h3 id="parsecontractupgrade"><a class="header" href="#parsecontractupgrade">parseContractUpgrade</a></h3>
+<pre><code class="language-solidity">function parseContractUpgrade(bytes memory encodedUpgrade) external pure returns (ContractUpgrade memory cu);
+</code></pre>
+<h3 id="parseguardiansetupgrade"><a class="header" href="#parseguardiansetupgrade">parseGuardianSetUpgrade</a></h3>
+<pre><code class="language-solidity">function parseGuardianSetUpgrade(bytes memory encodedUpgrade) external pure returns (GuardianSetUpgrade memory gsu);
+</code></pre>
+<h3 id="parsesetmessagefee"><a class="header" href="#parsesetmessagefee">parseSetMessageFee</a></h3>
+<pre><code class="language-solidity">function parseSetMessageFee(bytes memory encodedSetMessageFee) external pure returns (SetMessageFee memory smf);
+</code></pre>
+<h3 id="parsetransferfees"><a class="header" href="#parsetransferfees">parseTransferFees</a></h3>
+<pre><code class="language-solidity">function parseTransferFees(bytes memory encodedTransferFees) external pure returns (TransferFees memory tf);
+</code></pre>
+<h3 id="parserecoverchainid"><a class="header" href="#parserecoverchainid">parseRecoverChainId</a></h3>
+<pre><code class="language-solidity">function parseRecoverChainId(bytes memory encodedRecoverChainId) external pure returns (RecoverChainId memory rci);
+</code></pre>
+<h3 id="submitcontractupgrade"><a class="header" href="#submitcontractupgrade">submitContractUpgrade</a></h3>
+<pre><code class="language-solidity">function submitContractUpgrade(bytes memory _vm) external;
+</code></pre>
+<h3 id="submitsetmessagefee"><a class="header" href="#submitsetmessagefee">submitSetMessageFee</a></h3>
+<pre><code class="language-solidity">function submitSetMessageFee(bytes memory _vm) external;
+</code></pre>
+<h3 id="submitnewguardianset"><a class="header" href="#submitnewguardianset">submitNewGuardianSet</a></h3>
+<pre><code class="language-solidity">function submitNewGuardianSet(bytes memory _vm) external;
+</code></pre>
+<h3 id="submittransferfees"><a class="header" href="#submittransferfees">submitTransferFees</a></h3>
+<pre><code class="language-solidity">function submitTransferFees(bytes memory _vm) external;
+</code></pre>
+<h3 id="submitrecoverchainid"><a class="header" href="#submitrecoverchainid">submitRecoverChainId</a></h3>
+<pre><code class="language-solidity">function submitRecoverChainId(bytes memory _vm) external;
+</code></pre>
+<h2 id="events"><a class="header" href="#events">Events</a></h2>
+<h3 id="logmessagepublished"><a class="header" href="#logmessagepublished">LogMessagePublished</a></h3>
+<pre><code class="language-solidity">event LogMessagePublished(address indexed sender, uint64 sequence, uint32 nonce, bytes payload, uint8 consistencyLevel);
+</code></pre>
+<h3 id="contractupgraded"><a class="header" href="#contractupgraded">ContractUpgraded</a></h3>
+<pre><code class="language-solidity">event ContractUpgraded(address indexed oldContract, address indexed newContract);
+</code></pre>
+<h3 id="guardiansetadded"><a class="header" href="#guardiansetadded">GuardianSetAdded</a></h3>
+<pre><code class="language-solidity">event GuardianSetAdded(uint32 indexed index);
+</code></pre>
+<h2 id="structs"><a class="header" href="#structs">Structs</a></h2>
+<h3 id="guardianset"><a class="header" href="#guardianset">GuardianSet</a></h3>
+<pre><code class="language-solidity">struct GuardianSet {
+    address[] keys;
+    uint32 expirationTime;
+}
+</code></pre>
+<h3 id="signature"><a class="header" href="#signature">Signature</a></h3>
+<pre><code class="language-solidity">struct Signature {
+    bytes32 r;
+    bytes32 s;
+    uint8 v;
+    uint8 guardianIndex;
+}
+</code></pre>
+<h3 id="vm"><a class="header" href="#vm">VM</a></h3>
+<pre><code class="language-solidity">struct VM {
+    uint8 version;
+    uint32 timestamp;
+    uint32 nonce;
+    uint16 emitterChainId;
+    bytes32 emitterAddress;
+    uint64 sequence;
+    uint8 consistencyLevel;
+    bytes payload;
+    uint32 guardianSetIndex;
+    Signature[] signatures;
+    bytes32 hash;
+}
+</code></pre>
+<h3 id="contractupgrade"><a class="header" href="#contractupgrade">ContractUpgrade</a></h3>
+<pre><code class="language-solidity">struct ContractUpgrade {
+    bytes32 module;
+    uint8 action;
+    uint16 chain;
+    address newContract;
+}
+</code></pre>
+<h3 id="guardiansetupgrade"><a class="header" href="#guardiansetupgrade">GuardianSetUpgrade</a></h3>
+<pre><code class="language-solidity">struct GuardianSetUpgrade {
+    bytes32 module;
+    uint8 action;
+    uint16 chain;
+    GuardianSet newGuardianSet;
+    uint32 newGuardianSetIndex;
+}
+</code></pre>
+<h3 id="setmessagefee"><a class="header" href="#setmessagefee">SetMessageFee</a></h3>
+<pre><code class="language-solidity">struct SetMessageFee {
+    bytes32 module;
+    uint8 action;
+    uint16 chain;
+    uint256 messageFee;
+}
+</code></pre>
+<h3 id="transferfees"><a class="header" href="#transferfees">TransferFees</a></h3>
+<pre><code class="language-solidity">struct TransferFees {
+    bytes32 module;
+    uint8 action;
+    uint16 chain;
+    uint256 amount;
+    bytes32 recipient;
+}
+</code></pre>
+<h3 id="recoverchainid"><a class="header" href="#recoverchainid">RecoverChainId</a></h3>
+<pre><code class="language-solidity">struct RecoverChainId {
+    bytes32 module;
+    uint8 action;
+    uint256 evmChainId;
+    uint16 newChainId;
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../../../src/vendor/wormhole/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../../../src/vendor/wormhole/IWormholeReceiver.sol/interface.IWormholeReceiver.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../../../src/vendor/wormhole/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../../../src/vendor/wormhole/IWormholeReceiver.sol/interface.IWormholeReceiver.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../../../elasticlunr.min.js"></script>
+        <script src="../../../../mark.min.js"></script>
+        <script src="../../../../searcher.js"></script>
+
+        <script src="../../../../clipboard.min.js"></script>
+        <script src="../../../../highlight.js"></script>
+        <script src="../../../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../../../solidity.min.js"></script>
+
+
+    </div>
+    </body>
+</html>

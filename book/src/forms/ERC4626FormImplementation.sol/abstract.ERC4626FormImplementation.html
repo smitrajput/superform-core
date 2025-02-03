@@ -1,0 +1,417 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ERC4626FormImplementation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../../favicon.svg">
+        <link rel="shortcut icon" href="../../../favicon.png">
+        <link rel="stylesheet" href="../../../css/variables.css">
+        <link rel="stylesheet" href="../../../css/general.css">
+        <link rel="stylesheet" href="../../../css/chrome.css">
+        <link rel="stylesheet" href="../../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../../highlight.css">
+        <link rel="stylesheet" href="../../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../../book.css">
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="../../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/smitrajput/superform-core" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="erc4626formimplementation"><a class="header" href="#erc4626formimplementation">ERC4626FormImplementation</a></h1>
+<p><a href="https://github.com/smitrajput/superform-core/blob/2b1abb2f4e63862837f97d3914b36257db87d926/src/forms/ERC4626FormImplementation.sol">Git Source</a></p>
+<p><strong>Inherits:</strong>
+<a href="/src/BaseForm.sol/abstract.BaseForm.html">BaseForm</a>, <a href="/src/crosschain-liquidity/LiquidityHandler.sol/abstract.LiquidityHandler.html">LiquidityHandler</a></p>
+<p>Has common internal functions that can be re-used by actual form implementations</p>
+<h2 id="state-variables"><a class="header" href="#state-variables">State Variables</a></h2>
+<h3 id="state_registry_id"><a class="header" href="#state_registry_id">STATE_REGISTRY_ID</a></h3>
+<pre><code class="language-solidity">uint256 internal immutable STATE_REGISTRY_ID;
+</code></pre>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<h3 id="constructor"><a class="header" href="#constructor">constructor</a></h3>
+<pre><code class="language-solidity">constructor(address superRegistry_, uint256 stateRegistryId_) BaseForm(superRegistry_);
+</code></pre>
+<h3 id="getvaultasset"><a class="header" href="#getvaultasset">getVaultAsset</a></h3>
+<pre><code class="language-solidity">function getVaultAsset() public view virtual override returns (address);
+</code></pre>
+<h3 id="getvaultname"><a class="header" href="#getvaultname">getVaultName</a></h3>
+<pre><code class="language-solidity">function getVaultName() public view virtual override returns (string memory);
+</code></pre>
+<h3 id="getvaultsymbol"><a class="header" href="#getvaultsymbol">getVaultSymbol</a></h3>
+<pre><code class="language-solidity">function getVaultSymbol() public view virtual override returns (string memory);
+</code></pre>
+<h3 id="getvaultdecimals"><a class="header" href="#getvaultdecimals">getVaultDecimals</a></h3>
+<pre><code class="language-solidity">function getVaultDecimals() public view virtual override returns (uint256);
+</code></pre>
+<h3 id="getpricepervaultshare"><a class="header" href="#getpricepervaultshare">getPricePerVaultShare</a></h3>
+<pre><code class="language-solidity">function getPricePerVaultShare() public view virtual override returns (uint256);
+</code></pre>
+<h3 id="getvaultsharebalance"><a class="header" href="#getvaultsharebalance">getVaultShareBalance</a></h3>
+<pre><code class="language-solidity">function getVaultShareBalance() public view virtual override returns (uint256);
+</code></pre>
+<h3 id="gettotalassets"><a class="header" href="#gettotalassets">getTotalAssets</a></h3>
+<pre><code class="language-solidity">function getTotalAssets() public view virtual override returns (uint256);
+</code></pre>
+<h3 id="getpreviewpricepervaultshare"><a class="header" href="#getpreviewpricepervaultshare">getPreviewPricePerVaultShare</a></h3>
+<pre><code class="language-solidity">function getPreviewPricePerVaultShare() public view virtual override returns (uint256);
+</code></pre>
+<h3 id="previewdepositto"><a class="header" href="#previewdepositto">previewDepositTo</a></h3>
+<pre><code class="language-solidity">function previewDepositTo(uint256 assets_) public view virtual override returns (uint256);
+</code></pre>
+<h3 id="previewwithdrawfrom"><a class="header" href="#previewwithdrawfrom">previewWithdrawFrom</a></h3>
+<pre><code class="language-solidity">function previewWithdrawFrom(uint256 assets_) public view virtual override returns (uint256);
+</code></pre>
+<h3 id="previewredeemfrom"><a class="header" href="#previewredeemfrom">previewRedeemFrom</a></h3>
+<pre><code class="language-solidity">function previewRedeemFrom(uint256 shares_) public view virtual override returns (uint256);
+</code></pre>
+<h3 id="_processdirectdeposit"><a class="header" href="#_processdirectdeposit">_processDirectDeposit</a></h3>
+<pre><code class="language-solidity">function _processDirectDeposit(InitSingleVaultData memory singleVaultData_) internal returns (uint256 dstAmount);
+</code></pre>
+<h3 id="_processdirectwithdraw"><a class="header" href="#_processdirectwithdraw">_processDirectWithdraw</a></h3>
+<pre><code class="language-solidity">function _processDirectWithdraw(
+    InitSingleVaultData memory singleVaultData_,
+    address srcSender_
+)
+    internal
+    returns (uint256 dstAmount);
+</code></pre>
+<h3 id="_processxchaindeposit"><a class="header" href="#_processxchaindeposit">_processXChainDeposit</a></h3>
+<p><em>if there is no txData, on withdraws the receiver is the original beneficiary (srcSender_), otherwise it
+is this contract (before swap)</em></p>
+<p><em>the token we are swapping from to our desired output token (if there is txData), must be the same as
+the vault asset</em></p>
+<p><em>redeem the underlying</em></p>
+<p><em>the amount inscribed in liqData must be less or equal than the amount redeemed from the vault</em></p>
+<p><em>validate and perform the swap to desired output token and send to beneficiary</em></p>
+<pre><code class="language-solidity">function _processXChainDeposit(
+    InitSingleVaultData memory singleVaultData_,
+    uint64 srcChainId_
+)
+    internal
+    returns (uint256 dstAmount);
+</code></pre>
+<h3 id="_processxchainwithdraw"><a class="header" href="#_processxchainwithdraw">_processXChainWithdraw</a></h3>
+<pre><code class="language-solidity">function _processXChainWithdraw(
+    InitSingleVaultData memory singleVaultData_,
+    address srcSender_,
+    uint64 srcChainId_
+)
+    internal
+    returns (uint256 dstAmount);
+</code></pre>
+<h3 id="_processemergencywithdraw"><a class="header" href="#_processemergencywithdraw">_processEmergencyWithdraw</a></h3>
+<p><em>a case where the withdraw req liqData has a valid token and tx data is not updated by the keeper</em></p>
+<p><em>if there is no txData, on withdraws the receiver is the original beneficiary (srcSender_), otherwise it
+is this contract (before swap)</em></p>
+<p><em>the token we are swapping from to our desired output token (if there is txData), must be the same as
+the vault asset</em></p>
+<p><em>redeem vault positions (we operate only on positions, not assets)</em></p>
+<p><em>the amount inscribed in liqData must be less or equal than the amount redeemed from the vault</em></p>
+<p><em>validate and perform the swap to desired output token and send to beneficiary</em></p>
+<pre><code class="language-solidity">function _processEmergencyWithdraw(address refundAddress_, uint256 amount_) internal;
+</code></pre>
+<h3 id="superformyieldtokenname"><a class="header" href="#superformyieldtokenname">superformYieldTokenName</a></h3>
+<pre><code class="language-solidity">function superformYieldTokenName() external view virtual override returns (string memory);
+</code></pre>
+<h3 id="superformyieldtokensymbol"><a class="header" href="#superformyieldtokensymbol">superformYieldTokenSymbol</a></h3>
+<pre><code class="language-solidity">function superformYieldTokenSymbol() external view virtual override returns (string memory);
+</code></pre>
+<h3 id="getstateregistryid"><a class="header" href="#getstateregistryid">getStateRegistryId</a></h3>
+<pre><code class="language-solidity">function getStateRegistryId() external view override returns (uint256);
+</code></pre>
+<h3 id="_vaultsharesamounttounderlyingamount"><a class="header" href="#_vaultsharesamounttounderlyingamount">_vaultSharesAmountToUnderlyingAmount</a></h3>
+<p><em>Converts a vault share amount into an equivalent underlying asset amount</em></p>
+<pre><code class="language-solidity">function _vaultSharesAmountToUnderlyingAmount(
+    uint256 vaultSharesAmount_,
+    uint256
+)
+    internal
+    view
+    virtual
+    override
+    returns (uint256);
+</code></pre>
+<h3 id="_vaultsharesamounttounderlyingamountroundingup"><a class="header" href="#_vaultsharesamounttounderlyingamountroundingup">_vaultSharesAmountToUnderlyingAmountRoundingUp</a></h3>
+<p><em>Converts a vault share amount into an equivalent underlying asset amount, rounding up</em></p>
+<pre><code class="language-solidity">function _vaultSharesAmountToUnderlyingAmountRoundingUp(
+    uint256 vaultSharesAmount_,
+    uint256
+)
+    internal
+    view
+    virtual
+    override
+    returns (uint256);
+</code></pre>
+<h3 id="_underlyingamounttovaultsharesamount"><a class="header" href="#_underlyingamounttovaultsharesamount">_underlyingAmountToVaultSharesAmount</a></h3>
+<p><em>Converts an underlying asset amount into an equivalent vault shares amount</em></p>
+<pre><code class="language-solidity">function _underlyingAmountToVaultSharesAmount(
+    uint256 underlyingAmount_,
+    uint256
+)
+    internal
+    view
+    virtual
+    override
+    returns (uint256);
+</code></pre>
+<h2 id="structs"><a class="header" href="#structs">Structs</a></h2>
+<h3 id="directdepositlocalvars"><a class="header" href="#directdepositlocalvars">directDepositLocalVars</a></h3>
+<p><em>to avoid stack too deep errors</em></p>
+<pre><code class="language-solidity">struct directDepositLocalVars {
+    uint64 chainId;
+    address collateral;
+    address bridgeValidator;
+    uint256 dstAmount;
+    uint256 balanceBefore;
+    uint256 balanceAfter;
+    uint256 nonce;
+    uint256 deadline;
+    uint256 inputAmount;
+    bytes signature;
+}
+</code></pre>
+<h3 id="processdirectwithdawlocalvars"><a class="header" href="#processdirectwithdawlocalvars">ProcessDirectWithdawLocalVars</a></h3>
+<p><em>this is only valid if token == collateral (no txData)</em></p>
+<p><em>handles the collateral token transfers.</em></p>
+<p><em>transfers input token, which is the same as vault asset, to the form</em></p>
+<p><em>non empty txData means there is a swap needed before depositing (input asset not the same as vault
+asset)</em></p>
+<p><em>checks the allowance before transfer from router</em></p>
+<p><em>transfers input token, which is different from the vault asset, to the form</em></p>
+<p><em>the balance of vault tokens, ready to be deposited is compared with the previous balance</em></p>
+<p><em>notice the inscribed singleVaultData_.amount is deposited regardless if txData exists or not</em></p>
+<p><em>this is always the estimated value post any swaps (if they exist)</em></p>
+<p><em>the balance check above implies that a certain dust may be left in the superform after depositing</em></p>
+<p><em>the vault asset (collateral) is approved and deposited to the vault</em></p>
+<pre><code class="language-solidity">struct ProcessDirectWithdawLocalVars {
+    uint64 chainId;
+    address collateral;
+    address receiver;
+    address bridgeValidator;
+    uint256 len1;
+    uint256 amount;
+    IERC4626 v;
+}
+</code></pre>
+<h3 id="xchainwithdrawlocalvars"><a class="header" href="#xchainwithdrawlocalvars">xChainWithdrawLocalVars</a></h3>
+<p><em>pulling from sender, to auto-send tokens back in case of failed deposits / reverts</em></p>
+<p><em>allowance is modified inside of the IERC20.transferFrom() call</em></p>
+<p><em>This makes ERC4626Form (address(this)) owner of v.shares</em></p>
+<pre><code class="language-solidity">struct xChainWithdrawLocalVars {
+    uint64 dstChainId;
+    address receiver;
+    address collateral;
+    address bridgeValidator;
+    uint256 balanceBefore;
+    uint256 balanceAfter;
+    uint256 amount;
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../../src/forms/ERC4626Form.sol/contract.ERC4626Form.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../../src/forms/ERC4626KYCDaoForm.sol/contract.ERC4626KYCDaoForm.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../../src/forms/ERC4626Form.sol/contract.ERC4626Form.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../../src/forms/ERC4626KYCDaoForm.sol/contract.ERC4626KYCDaoForm.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../../elasticlunr.min.js"></script>
+        <script src="../../../mark.min.js"></script>
+        <script src="../../../searcher.js"></script>
+
+        <script src="../../../clipboard.min.js"></script>
+        <script src="../../../highlight.js"></script>
+        <script src="../../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../../solidity.min.js"></script>
+
+
+    </div>
+    </body>
+</html>
